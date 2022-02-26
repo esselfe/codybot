@@ -1,0 +1,4 @@
+#!/bin/bash
+
+scp stats bsfc@BSFC-LT04:/home/bsfc/code/codybot
+

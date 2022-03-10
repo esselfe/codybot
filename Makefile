@@ -4,10 +4,10 @@ LDFLAGS = -lpthread -lssl -lcrypto -lmagic
 OBJDIR = obj
 OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o \
 $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o $(OBJDIR)/cmd-chars.o \
-$(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o \
-$(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o $(OBJDIR)/cmd-rainbow.o \
-$(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o \
-$(OBJDIR)/codybot.o $(OBJDIR)/console.o \
+$(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o $(OBJDIR)/cmd-dict.o \
+$(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o \
+$(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o \
+$(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o $(OBJDIR)/console.o \
 $(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o $(OBJDIR)/raw.o \
 $(OBJDIR)/thread.o
 PROGNAME = codybot
@@ -38,6 +38,9 @@ $(OBJDIR)/cmd-chars.o: src/cmd-chars.c
 
 $(OBJDIR)/cmd-colorize.o: src/cmd-colorize.c
 	gcc -c $(CFLAGS) src/cmd-colorize.c -o $(OBJDIR)/cmd-colorize.o
+
+$(OBJDIR)/cmd-date.o: src/cmd-date.c
+	gcc -c $(CFLAGS) src/cmd-date.c -o $(OBJDIR)/cmd-date.o
 
 $(OBJDIR)/cmd-dict.o: src/cmd-dict.c
 	gcc -c $(CFLAGS) src/cmd-dict.c -o $(OBJDIR)/cmd-dict.o

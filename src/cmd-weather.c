@@ -66,7 +66,7 @@ void Weather(struct raw_line *rawp) {
 			++cp;
 			continue;
 		}
-		else if (*cp == '"') {
+		else if (*cp == '"' || *cp == '$' || *cp == '/' || *cp == '\\') {
 			++cp;
 			continue;
 		}

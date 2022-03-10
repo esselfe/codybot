@@ -243,9 +243,9 @@ strcmp(raw.command, "NICK")!=0) {
 		if (raw.text[0]==trigger_char && strncmp(raw.text+1, "help", 4) == 0) {
 			char c = trigger_char;
 			sprintf(buffer, "commands: %cabout %cadmins %cascii %ccc %cchars "
-				"%ccolorize %cdict %cfoldoc %chelp %cfortune %cjoke %crainbow "
+				"%ccolorize %cdate %cdict %cfoldoc %chelp %cfortune %cjoke %crainbow "
 				"%csh %cstats %cuptime %cversion %cweather",
-				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
+				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
 			Msg(buffer);
 			continue;
 		}
@@ -358,6 +358,9 @@ strcmp(raw.command, "NICK")!=0) {
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "colorize ", 9) == 0)
 			Colorize(&raw);
+// date
+		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "date", 4) == 0)
+			Date();
 // dict
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "dict") == 0) {
 			sprintf(buffer, "Missing argument, e.g. '%cdict wordhere'", trigger_char);

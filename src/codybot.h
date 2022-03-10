@@ -96,6 +96,9 @@ void Weather(struct raw_line *rawp);
 // from console.c
 void ConsoleReadInput(void);
 
+// from cmd-date.c
+void Date(void);
+
 // from dict.c
 void Dict(struct raw_line *rawp);
 

@@ -38,7 +38,7 @@ Before running for the first time, you should also run
     scripts/initial-setup
 
 so something like `!sh rm importantfiles` won't be able to do any damage;
-see https://github.com/esselfe/codybot/security/advisories.
+see https://github.com/esselfe/codybot/issues/1
 
 ## Identifying
 
@@ -164,8 +164,6 @@ You can also limit the permitted storage size by adding "--tmpfs /home/user/cody
 ----
 
 ### Links:  
-- Wiki (Currently under construction): https://github.com/esselfe/codybot/wiki  
-- Development status: https://github.com/esselfe/codybot/projects/1  
 - Code last changes: https://github.com/esselfe/codybot/commits
 - Blinkenshell project:  
   - https://blinkenshell.org/wiki/Projects/codybot  

@@ -10,11 +10,11 @@ void Date(int offset) {
 		sprintf(buffer, "TZ=UTC date > cmd.output");
 	else if (offset < 0)
 		sprintf(buffer,
-			"TZ=UTC+%d date > cmd.output; sed -i 's/ UTC//' cmd.output",
+			"TZ=UTC+%d date | sed 's/ UTC//' > cmd.output",
 			-offset);
 	else if (offset > 0)
 		sprintf(buffer,
-			"TZ=UTC-%d date > cmd.output; sed -i 's/ UTC//' cmd.output",
+			"TZ=UTC-%d date | sed 's/ UTC//' > cmd.output",
 			offset);
 
 	system(buffer);

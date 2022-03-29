@@ -97,7 +97,7 @@ void Weather(struct raw_line *rawp);
 void ConsoleReadInput(void);
 
 // from cmd-date.c
-void Date(void);
+void Date(int offset);
 
 // from dict.c
 void Dict(struct raw_line *rawp);

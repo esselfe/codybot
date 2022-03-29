@@ -359,8 +359,59 @@ strcmp(raw.command, "NICK")!=0) {
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "colorize ", 9) == 0)
 			Colorize(&raw);
 // date
+		else if (raw.text[0]==trigger_char && strlen(raw.text) > 6 &&
+			strncmp(raw.text+1, "date utc", 8) == 0) {
+			if (strncmp(raw.text+5, "utc-12", 6) == 0)
+				Date(-12);
+			else if (strncmp(raw.text+6, "utc-11", 6) == 0)
+				Date(-11);
+			else if (strncmp(raw.text+6, "utc-10", 6) == 0)
+				Date(-10);
+			else if (strncmp(raw.text+6, "utc-9", 5) == 0)
+				Date(-9);
+			else if (strncmp(raw.text+6, "utc-8", 5) == 0)
+				Date(-8);
+			else if (strncmp(raw.text+6, "utc-7", 5) == 0)
+				Date(-7);
+			else if (strncmp(raw.text+6, "utc-6", 5) == 0)
+				Date(-6);
+			else if (strncmp(raw.text+6, "utc-5", 5) == 0)
+				Date(-5);
+			else if (strncmp(raw.text+6, "utc-4", 5) == 0)
+				Date(-4);
+			else if (strncmp(raw.text+6, "utc-3", 5) == 0)
+				Date(-3);
+			else if (strncmp(raw.text+6, "utc-2", 5) == 0)
+				Date(-2);
+			else if (strncmp(raw.text+6, "utc-1", 5) == 0)
+				Date(-1);
+			else if (strncmp(raw.text+6, "utc+1", 5) == 0)
+				Date(1);
+			else if (strncmp(raw.text+6, "utc+2", 5) == 0)
+				Date(2);
+			else if (strncmp(raw.text+6, "utc+3", 5) == 0)
+				Date(3);
+			else if (strncmp(raw.text+6, "utc+4", 5) == 0)
+				Date(4);
+			else if (strncmp(raw.text+6, "utc+5", 5) == 0)
+				Date(5);
+			else if (strncmp(raw.text+6, "utc+6", 5) == 0)
+				Date(6);
+			else if (strncmp(raw.text+6, "utc+7", 5) == 0)
+				Date(7);
+			else if (strncmp(raw.text+6, "utc+8", 5) == 0)
+				Date(8);
+			else if (strncmp(raw.text+6, "utc+9", 5) == 0)
+				Date(9);
+			else if (strncmp(raw.text+6, "utc+10", 6) == 0)
+				Date(10);
+			else if (strncmp(raw.text+6, "utc+11", 6) == 0)
+				Date(11);
+			else if (strncmp(raw.text+6, "utc+12", 6) == 0)
+				Date(12);
+		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "date", 4) == 0)
-			Date();
+			Date(0);
 // dict
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "dict") == 0) {
 			sprintf(buffer, "Missing argument, e.g. '%cdict wordhere'", trigger_char);

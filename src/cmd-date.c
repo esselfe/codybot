@@ -5,8 +5,19 @@
 
 #include "codybot.h"
 
-void Date(void) {
-	system("date > cmd.output");
+void Date(int offset) {
+	if (offset == 0)
+		sprintf(buffer, "TZ=UTC date > cmd.output");
+	else if (offset < 0)
+		sprintf(buffer,
+			"TZ=UTC+%d date > cmd.output; sed -i 's/ UTC//' cmd.output",
+			-offset);
+	else if (offset > 0)
+		sprintf(buffer,
+			"TZ=UTC-%d date > cmd.output; sed -i 's/ UTC//' cmd.output",
+			offset);
+
+	system(buffer);
 
 	FILE *fp = fopen("cmd.output", "r");
 	if (fp == NULL) {

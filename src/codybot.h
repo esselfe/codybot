@@ -80,6 +80,7 @@ void ParseAdminFile(void);
 
 // from cmd-*.c
 void AsciiArt(struct raw_line *rawp);
+void Cal(void);
 void Calc(struct raw_line *rawp);
 void CC(struct raw_line *rawp);
 void Chars(struct raw_line *rawp);

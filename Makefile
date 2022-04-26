@@ -2,7 +2,7 @@
 CFLAGS = -std=c11 -Wall -Werror -D_GNU_SOURCE -O2
 LDFLAGS = -lpthread -lssl -lcrypto -lmagic
 OBJDIR = obj
-OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o \
+OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o $(OBJDIR)/cmd-cal.o \
 $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o $(OBJDIR)/cmd-chars.o \
 $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o $(OBJDIR)/cmd-dict.o \
 $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o \
@@ -26,6 +26,9 @@ $(OBJDIR)/admin.o: src/admin.c
 
 $(OBJDIR)/cmd-ascii-art.o: src/cmd-ascii-art.c
 	gcc -c $(CFLAGS) src/cmd-ascii-art.c -o $(OBJDIR)/cmd-ascii-art.o
+
+$(OBJDIR)/cmd-cal.o: src/cmd-cal.c
+	gcc -c $(CFLAGS) src/cmd-cal.c -o $(OBJDIR)/cmd-cal.o
 
 $(OBJDIR)/cmd-calc.o: src/cmd-calc.c
 	gcc -c $(CFLAGS) src/cmd-calc.c -o $(OBJDIR)/cmd-calc.o

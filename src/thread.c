@@ -282,6 +282,9 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buffer);
 			}
 		}
+// cal
+		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cal") == 0)
+			Cal();
 // calc
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "calc") == 0)
 			Msg("calc  example: '^calc 10+20'");

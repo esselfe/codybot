@@ -7,7 +7,7 @@
 
 void Cal(void) {
 	// Remove highlighted (current) day, doesn't display right in the chat
-	system("cal -3 | sed 's/\x5F\x8\\([0-9]\\)/\00308\\1\003/g' > cmd.output");
+	system("cal --color=always -3 | sed 's/\x5F\x8\\([0-9]\\)/\00308\\1\003/g' > cmd.output");
 
 	FILE *fp = fopen("cmd.output", "r");
 	if (fp == NULL) {

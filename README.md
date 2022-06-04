@@ -5,7 +5,7 @@
 ## Overview
 
 `codybot` is an IRC bot written with the C programming language, providing users
-with fortune cookies, jokes, oneliner C compilation, shell access, text colorization,
+with fortune cookies, jokes, oneliner C/C++ compilation, shell access, text colorization,
 ascii art, special characters and weather per city. It was inspired by candide on
 Freenode, a great bot written in Perl (see https://github.com/pragma-/pbot/).
 

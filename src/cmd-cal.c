@@ -18,15 +18,19 @@ void Cal(void) {
 		return;
 	}
 
-	int cnt = 0;
 	size_t size = 1024;
+	ssize_t ret;
 	char *line = malloc(size);
-	while (++cnt <= 7) {
-		memset(line, 0, 1024);
-		getline(&line, &size, fp);
-		Msg(line);
+	while (1) {
+		memset(line, 0, size);
+		ret = getline(&line, &size, fp);
+		if (ret <= 0)
+			break;
+		else
+			Msg(line);
 	}
 
+	free(line);
 	fclose(fp);
 }
 

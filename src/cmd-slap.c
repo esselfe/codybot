@@ -37,7 +37,7 @@ void SlapCheck(struct raw_line *rawp) {
 				slap_hour = tm0->tm_hour;
 				slap_cnt = 0;
 			}
-			else if (slap_hour == tm0->tm_hour && slap_cnt >= 10)
+			else if (slap_hour == tm0->tm_hour && slap_cnt >= slap_max)
 				return;
 		}
 

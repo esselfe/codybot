@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <pthread.h>
 
 #include "codybot.h"
 
@@ -37,10 +38,12 @@ int WeatherCheckUsage(void) {
 	return 0;
 }
 
-void Weather(struct raw_line *rawp) {
+void *WeatherFunc(void *ptr) {
+	struct raw_line *rawp = ptr;
+
 	if (!WeatherCheckUsage()) {
 		Msg("Weather quota reached, maximum 10 times every 30 minutes.");
-		return;
+		return NULL;
 	}
 
 	// Check for "kill" found in ",weather `pkill${IFS}codybot`" which kills the bot
@@ -50,7 +53,7 @@ void Weather(struct raw_line *rawp) {
 			break;
 		if (strlen(c) >= 5 && strncmp(c, "kill", 4) == 0) {
 			Msg("weather: contains a blocked term...");
-			return;
+			return NULL;
 		}
 		++c;
 	}
@@ -104,7 +107,7 @@ void Weather(struct raw_line *rawp) {
 		sprintf(buffer, "codybot error: Cannot open %s: %s",
 			filename, strerror(errno));
 		Msg(buffer);
-		return;
+		return NULL;
 	}
 	fseek(fp, 0, SEEK_END);
 	unsigned long filesize = ftell(fp);
@@ -242,4 +245,18 @@ void Weather(struct raw_line *rawp) {
 		system(buffer);
 		memset(buffer, 0, 4096);
 	}
+
+	return NULL;
 }
+
+void Weather(struct raw_line *rawp) {
+	pthread_t thr;
+	pthread_attr_t attr;
+
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&thr, &attr, WeatherFunc, (void *)rawp);
+	pthread_detach(thr);
+	pthread_attr_destroy(&attr);
+}
+

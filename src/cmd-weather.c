@@ -40,6 +40,8 @@ int WeatherCheckUsage(void) {
 
 void *WeatherFunc(void *ptr) {
 	struct raw_line *rawp = RawLineDup((struct raw_line *)ptr);
+	char buf[4096];
+	memset(buf, 0, 4096);
 
 	if (!WeatherCheckUsage()) {
 		Msg("Weather quota reached, maximum 10 times every 30 minutes.");
@@ -92,9 +94,9 @@ void *WeatherFunc(void *ptr) {
 
 	char filename[1024];
 	sprintf(filename, "/tmp/codybot-weather-%s.txt", city_conv);
-	sprintf(buffer, "wget -t 1 -T 24 https://wttr.in/%s?format=%%C:%%t:%%f:%%w:%%p "
+	sprintf(buf, "wget -t 1 -T 24 https://wttr.in/%s?format=%%C:%%t:%%f:%%w:%%p "
 		"-O %s", city_conv, filename);
-	system(buffer);
+	system(buf);
 
 	/*temp2[strlen(temp2)-1] = ' ';
 	int deg_celsius = atoi(temp2);
@@ -104,9 +106,9 @@ void *WeatherFunc(void *ptr) {
 
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
-		sprintf(buffer, "codybot error: Cannot open %s: %s",
+		sprintf(buf, "codybot error: Cannot open %s: %s",
 			filename, strerror(errno));
-		Msg(buffer);
+		Msg(buf);
 		return NULL;
 	}
 	fseek(fp, 0, SEEK_END);
@@ -229,8 +231,8 @@ void *WeatherFunc(void *ptr) {
 		++cnt;
 		++cnt2;
 	}
-	sprintf(buffer, "%s: %s", city, str2);
-	Msg(buffer);
+	sprintf(buf, "%s: %s", city, str2);
+	Msg(buf);
 
 	/*FILE *fw = fopen("tmp/data", "w");
 	for (c = str; *c != '\0'; c++)
@@ -241,9 +243,9 @@ void *WeatherFunc(void *ptr) {
 	free(str2);
 	
 	if (!debug) {
-		sprintf(buffer, "rm %s", filename);
-		system(buffer);
-		memset(buffer, 0, 4096);
+		sprintf(buf, "rm %s", filename);
+		system(buf);
+		memset(buf, 0, 4096);
 	}
 
 	return NULL;

@@ -23,12 +23,12 @@ extern char *log_filename; // $srcdir/codybot.log if not set, see main()
 extern char *buffer, *buffer_rx, *buffer_cmd, *buffer_log;
 extern char trigger_char; // character which is prefixed to commands in IRC chat readout
 extern char *current_channel; // used as changeable default channel for console 
-                              // 'msg/fortune' cmd
+							  // 'msg/fortune' cmd
 extern char *nick; // running bot's IRC nick
 extern char *full_user_name; // name displayed in IRC /whois responses
 extern char *hostname;
 extern char *target; // this one should be worked upon a little bit :P
-                     // used to differentiate channel-wide vs private messages
+					 // used to differentiate channel-wide vs private messages
 extern char *colors[]; // IRC color codes used in '!colorize/!rainbow'
 
 // Log() directions
@@ -113,6 +113,7 @@ void MsgRaw(char *text);
 // from raw.c
 char *RawGetTarget(struct raw_line *rawp);
 void RawLineClear(struct raw_line *rawp);
+struct raw_line *RawLineDup(struct raw_line *rawp);
 int RawLineParse(struct raw_line *rawp, char *line);
 void RawMsg(struct raw_line *rawp);
 

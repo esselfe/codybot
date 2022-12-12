@@ -28,6 +28,19 @@ void RawLineClear(struct raw_line *rawp) {
 	memset(rawp->text, 0, 4096);
 }
 
+struct raw_line *RawLineDup(struct raw_line *rawp) {
+	struct raw_line *ptr = malloc(sizeof(struct raw_line));
+
+	ptr->nick = strdup(rawp->nick);
+	ptr->username = strdup(rawp->username);
+	ptr->host = strdup(rawp->host);
+	ptr->command = strdup(rawp->command);
+	ptr->channel = strdup(rawp->channel);
+	ptr->text = strdup(rawp->text);
+
+	return ptr;
+}
+
 // Type of message to be parsed:
 // :esselfe!~bsfc@unaffiliated/esselfe PRIVMSG #codybot :^codybot_version
 // Return 0 if no more processing needs to be made and 1 if the raw struct will

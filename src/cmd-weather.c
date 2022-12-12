@@ -39,7 +39,7 @@ int WeatherCheckUsage(void) {
 }
 
 void *WeatherFunc(void *ptr) {
-	struct raw_line *rawp = ptr;
+	struct raw_line *rawp = RawLineDup((struct raw_line *)ptr);
 
 	if (!WeatherCheckUsage()) {
 		Msg("Weather quota reached, maximum 10 times every 30 minutes.");

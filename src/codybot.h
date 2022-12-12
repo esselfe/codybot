@@ -114,6 +114,7 @@ void MsgRaw(char *text);
 char *RawGetTarget(struct raw_line *rawp);
 void RawLineClear(struct raw_line *rawp);
 struct raw_line *RawLineDup(struct raw_line *rawp);
+void RawLineFree(struct raw_line *rawp);
 int RawLineParse(struct raw_line *rawp, char *line);
 void RawMsg(struct raw_line *rawp);
 

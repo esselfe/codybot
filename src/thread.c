@@ -25,6 +25,7 @@ void *ThreadRunFunc(void *argp) {
 	char *text = strdup(raw.text);
 	printf("&& Thread started ::%s::\n", text);
 	char *cp = text;
+	char buf[4096]; // don't clash with the global buffer
 	char cmd[4096];
 	sprintf(cmd, "timeout %ds bash -c 'cd tmp; ", cmd_timeout);
 	unsigned int cnt = strlen(cmd);
@@ -49,25 +50,25 @@ void *ThreadRunFunc(void *argp) {
 
 	FILE *fp = fopen("cmd.ret", "r");
 	if (fp == NULL) {
-		sprintf(buffer, "codybot::ThreadRunFunc() error: Cannot open cmd.ret: %s",
+		sprintf(buf, "codybot::ThreadRunFunc() error: Cannot open cmd.ret: %s",
 			strerror(errno));
-		Msg(buffer);
+		Msg(buf);
 	}
-	fgets(buffer, 4096, fp);
+	fgets(buf, 4096, fp);
 	fclose(fp);
 
-	ret = atoi(buffer);
+	ret = atoi(buf);
 	if (ret == 124) {
-		sprintf(buffer_cmd, "sh: %s: timed out", text);
-		Msg(buffer_cmd);
+		sprintf(buf, "sh: %s: timed out", text);
+		Msg(buf);
 		return NULL;
 	}
 
 	fp = fopen("cmd.output", "r");
 	if (fp == NULL) {
-		sprintf(buffer, "codybot::ThreadRunFunc() error: Cannot open cmd.output: %s",
+		sprintf(buf, "codybot::ThreadRunFunc() error: Cannot open cmd.output: %s",
 			strerror(errno));
-		Msg(buffer);
+		Msg(buf);
 		return NULL;
 	}
 
@@ -143,18 +144,6 @@ void *ThreadRunFunc(void *argp) {
 	return NULL;
 }
 
-// Thread for reading raw data from the server.
-void *ThreadRXFunc(void *argp);
-void ThreadRXStart(void) {
-	pthread_t thr;
-	pthread_attr_t attr;
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&thr, &attr, ThreadRXFunc, NULL);
-	pthread_detach(thr);
-	pthread_attr_destroy(&attr);
-}
-
 int CheckCTCPTime(void) {
 	t0 = time(NULL);
 	if (strcmp(raw.nick, ctcp_prev_nick) == 0 && ctcp_prev_time <= t0-5) {
@@ -168,7 +157,20 @@ int CheckCTCPTime(void) {
 	}
 }
 
+// Thread for reading raw data from the server.
+void *ThreadRXFunc(void *argp);
+void ThreadRXStart(void) {
+	pthread_t thr;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&thr, &attr, ThreadRXFunc, NULL);
+	pthread_detach(thr);
+	pthread_attr_destroy(&attr);
+}
+
 void *ThreadRXFunc(void *argp) {
+	char buffer_rx[4096], buf[4096];
 	while (!endmainloop) {
 		memset(buffer_rx, 0, 4096);
 		SSL_read(pSSL, buffer_rx, 4095);
@@ -198,17 +200,17 @@ void *ThreadRXFunc(void *argp) {
 			if (CheckCTCPTime())
 				continue;
 
-			sprintf(buffer, "NOTICE %s :\001CLIENTINFO CLIENTINFO PING TIME VERSION\x01\n",
+			sprintf(buf, "NOTICE %s :\001CLIENTINFO CLIENTINFO PING TIME VERSION\x01\n",
 				raw.nick);
-			MsgRaw(buffer);
+			MsgRaw(buf);
 			continue;
 		}
 		else if (strncmp(raw.text, "\x01PING ", 6) == 0) {
 			if (CheckCTCPTime())
 				continue;
 
-			sprintf(buffer, "NOTICE %s :%s\n", raw.nick, raw.text);
-			MsgRaw(buffer);
+			sprintf(buf, "NOTICE %s :%s\n", raw.nick, raw.text);
+			MsgRaw(buf);
 			continue;
 		}
 		else if (strcmp(raw.text, "\x01TIME\x01") == 0) {
@@ -216,23 +218,23 @@ void *ThreadRXFunc(void *argp) {
 				continue;
 			
 			t0 = time(NULL);
-			sprintf(buffer, "NOTICE %s :\x01TIME %s\x01\n", raw.nick, ctime(&t0));
-			MsgRaw(buffer);
+			sprintf(buf, "NOTICE %s :\x01TIME %s\x01\n", raw.nick, ctime(&t0));
+			MsgRaw(buf);
 			continue;
 		}
 		else if (strcmp(raw.text, "\x01VERSION\x01") == 0) {
 			if (CheckCTCPTime())
 				continue;
 			
-			sprintf(buffer, "NOTICE %s :\x01VERSION codybot %s\x01\n", raw.nick,
+			sprintf(buf, "NOTICE %s :\x01VERSION codybot %s\x01\n", raw.nick,
 				codybot_version_string);
-			MsgRaw(buffer);
+			MsgRaw(buf);
 			continue;
 		}
 
 		if (strcmp(raw.channel, nick) == 0) {
-			sprintf(buffer, "PRIVMSG %s :Cannot use private messages", raw.nick);
-			MsgRaw(buffer);
+			sprintf(buf, "PRIVMSG %s :Cannot use private messages", raw.nick);
+			MsgRaw(buf);
 			continue;
 		}
 
@@ -242,11 +244,11 @@ strcmp(raw.command, "NICK")!=0) {
 // help
 		if (raw.text[0]==trigger_char && strncmp(raw.text+1, "help", 4) == 0) {
 			char c = trigger_char;
-			sprintf(buffer, "commands: %cabout %cadmins %cascii %ccal %ccalc %ccc "
+			sprintf(buf, "commands: %cabout %cadmins %cascii %ccal %ccalc %ccc "
 				"%cchars %ccolorize %cdate %cdict %cfoldoc %chelp %cfortune %cjoke "
 				"%crainbow %csh %cstats %cuptime %cversion %cweather",
 				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
-			Msg(buffer);
+			Msg(buf);
 			continue;
 		}
 // admins
@@ -254,15 +256,15 @@ strcmp(raw.command, "NICK")!=0) {
 			DestroyAdminList();
 			ParseAdminFile();
 			char *str = EnumerateAdmins();
-			sprintf(buffer, "Admins: %s", str);
+			sprintf(buf, "Admins: %s", str);
 			free(str);
-			Msg(buffer);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "admins", 6) == 0) {
 			char *str = EnumerateAdmins();
-			sprintf(buffer, "Admins: %s", str);
+			sprintf(buf, "Admins: %s", str);
 			free(str);
-			Msg(buffer);
+			Msg(buf);
 		}
 // ascii
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "ascii", 5) == 0) {
@@ -277,9 +279,9 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("codybot is an IRC bot written in C by esselfe, "
 					"sources @ https://github.com/esselfe/codybot");
 			else {
-				sprintf(buffer, "codybot(%s) is an IRC bot written in C by esselfe, "
+				sprintf(buf, "codybot(%s) is an IRC bot written in C by esselfe, "
 					"sources @ https://github.com/esselfe/codybot\n", nick);
-				Msg(buffer);
+				Msg(buf);
 			}
 		}
 // cal
@@ -292,8 +294,8 @@ strcmp(raw.command, "NICK")!=0) {
 			Calc(&raw);
 // cc
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc") == 0) {
-			sprintf(buffer, "example: ,cc printf(\"this\\n\");");
-			Msg(buffer);
+			sprintf(buf, "example: ,cc printf(\"this\\n\");");
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc gcc") == 0) {
 			cc_compiler = CC_COMPILER_GCC;
@@ -316,13 +318,13 @@ strcmp(raw.command, "NICK")!=0) {
 			struct stat st2;
 			if (cc_disabled || stat("cc_disable", &st2) == 0) {
 			if (strcmp(server_name, "irc.blinkenshell.org") == 0)
-				sprintf(buffer, "%s: cc is permanently disabled", raw.nick);
+				sprintf(buf, "%s: cc is permanently disabled", raw.nick);
 			else {
-				sprintf(buffer, "%s: cc is temporarily disabled, "
+				sprintf(buf, "%s: cc is temporarily disabled, "
 					"try again later or ask esselfe to enable it", raw.nick);
 			}
 
-				Msg(buffer);
+				Msg(buf);
 				continue;
 			}
 			CC(&raw);
@@ -333,8 +335,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("cc_disabled = 1");
 			}
 			else {
-				sprintf(buffer, "cc_disable can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "cc_disable can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc_enable") == 0) {
@@ -343,8 +345,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("cc_disabled = 0");
 			}
 			else {
-				sprintf(buffer, "cc_enable can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "cc_enable can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 // chars
@@ -356,8 +358,8 @@ strcmp(raw.command, "NICK")!=0) {
 				" \00309 \0031010 \0031111 \0031212 \0031313 \0031414 \0031515");
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "colorize") == 0) {
-			sprintf(buffer, "Usage: %ccolorize some text to process", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "Usage: %ccolorize some text to process", trigger_char);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "colorize ", 9) == 0)
 			Colorize(&raw);
@@ -417,15 +419,15 @@ strcmp(raw.command, "NICK")!=0) {
 			Date(0);
 // dict
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "dict") == 0) {
-			sprintf(buffer, "Missing argument, e.g. '%cdict wordhere'", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "Missing argument, e.g. '%cdict wordhere'", trigger_char);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "dict ", 5) == 0)
 			Dict(&raw);
 // foldoc
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "foldoc") == 0) {
-			sprintf(buffer, "Missing term argument, e.g. '%cfoldoc linux'", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "Missing term argument, e.g. '%cfoldoc linux'", trigger_char);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "foldoc ", 7) == 0)
 			Foldoc(&raw);
@@ -460,14 +462,14 @@ strcmp(raw.command, "NICK")!=0) {
 // msgbig
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "msgbig") == 0 &&
 			IsAdmin(raw.nick, raw.host)) {
-			memset(buffer, 0, 4096);
-			memset(buffer, '#', 1024);
-			Msg(buffer);
+			memset(buf, 0, 4096);
+			memset(buf, '#', 1024);
+			Msg(buf);
 		}
 // rainbow
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "rainbow") == 0) {
-			sprintf(buffer, "Usage: %crainbow some random text", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "Usage: %crainbow some random text", trigger_char);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "rainbow ", 8) == 0)
 			Rainbow(&raw);
@@ -481,8 +483,8 @@ strcmp(raw.command, "NICK")!=0) {
 			Stats(&raw);
 // timeout
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "timeout") == 0) {
-			sprintf(buffer, "timeout = %d", cmd_timeout);
-			Msg(buffer);
+			sprintf(buf, "timeout = %d", cmd_timeout);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "timeout ", 8) == 0) {
 			if (strcmp(raw.nick, "codybot")==0 || IsAdmin(raw.nick, raw.host)) {
@@ -498,26 +500,26 @@ strcmp(raw.command, "NICK")!=0) {
 				cmd_timeout = atoi(raw.text);
 				if (cmd_timeout == 0)
 					cmd_timeout = 5;
-				sprintf(buffer, "timeout = %d", cmd_timeout);
-				Msg(buffer);
+				sprintf(buf, "timeout = %d", cmd_timeout);
+				Msg(buf);
 			}
 			else {
-				sprintf(buffer, "timeout can only be set by an admin");
-				Msg(buffer);
+				sprintf(buf, "timeout can only be set by an admin");
+				Msg(buf);
 			}
 		}
 // trigger
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "trigger") == 0) {
-			sprintf(buffer, "trigger = '%c'", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "trigger = '%c'", trigger_char);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char&&raw.text[1]=='t'&&raw.text[2]=='r'&&
 			raw.text[3]=='i'&&raw.text[4]=='g'&&raw.text[5]=='g'&&raw.text[6]=='e'&&
 			raw.text[7]=='r'&&raw.text[8]==' '&&raw.text[9]!='\n') {
 			if (IsAdmin(raw.nick, raw.host))
 				trigger_char = raw.text[9];
-			sprintf(buffer, "trigger = '%c'", trigger_char);
-			Msg(buffer);
+			sprintf(buf, "trigger = '%c'", trigger_char);
+			Msg(buf);
 		}
 // uptime
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "uptime") == 0) {
@@ -525,29 +527,29 @@ strcmp(raw.command, "NICK")!=0) {
 			t0 = (time_t)tv0.tv_sec - tv_start.tv_sec;
 			tm0 = gmtime(&t0);
 			if (tm0->tm_mday > 1)
-				sprintf(buffer, "uptime: %02d day%s %02d:%02d:%02d", tm0->tm_mday-1,
+				sprintf(buf, "uptime: %02d day%s %02d:%02d:%02d", tm0->tm_mday-1,
 					(tm0->tm_mday>2)?"s":"", tm0->tm_hour, tm0->tm_min, tm0->tm_sec);
 			else
-				sprintf(buffer, "uptime: %02d:%02d:%02d", tm0->tm_hour, tm0->tm_min,
+				sprintf(buf, "uptime: %02d:%02d:%02d", tm0->tm_hour, tm0->tm_min,
 					tm0->tm_sec);
-			Msg(buffer);
+			Msg(buf);
 		}
 // version
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "version") == 0) {
-			sprintf(buffer, "codybot %s", codybot_version_string);
-			Msg(buffer);
+			sprintf(buf, "codybot %s", codybot_version_string);
+			Msg(buf);
 		}
 // weather
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather") == 0) {
-			sprintf(buffer, "weather: missing city argument, example: "
+			sprintf(buf, "weather: missing city argument, example: "
 				"'%cweather montreal'", trigger_char);
-			Msg(buffer);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "weather ", 8) == 0) {
 			if (wttr_disabled) {
-				sprintf(buffer, ",weather is currently disabled, try again later or "
+				sprintf(buf, ",weather is currently disabled, try again later or "
 					"ask an admin to enable it");
-				Msg(buffer);
+				Msg(buf);
 			}
 			else
 				Weather(&raw);
@@ -558,8 +560,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("weather_disabled = 1");
 			}
 			else {
-				sprintf(buffer, "Only an admin can use ,weather_disable");
-				Msg(buffer);
+				sprintf(buf, "Only an admin can use ,weather_disable");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather_enable") == 0) {
@@ -568,15 +570,15 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("weather_disabled = 0");
 			}
 			else {
-				sprintf(buffer, "Only an admin can use ,weather_enable");
-				Msg(buffer);
+				sprintf(buf, "Only an admin can use ,weather_enable");
+				Msg(buf);
 			}
 		}
 // sh
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh") == 0) {
-			sprintf(buffer, "sh: missing argument, example: '%csh ls -ld /tmp'",
+			sprintf(buf, "sh: missing argument, example: '%csh ls -ld /tmp'",
 				trigger_char);
-			Msg(buffer);
+			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_lock") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
@@ -584,8 +586,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("sh_locked = 1");
 			}
 			else {
-				sprintf(buffer, "sh_lock can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "sh_lock can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_enable") == 0) {
@@ -594,8 +596,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("sh_disabled = 0");
 			}
 			else {
-				sprintf(buffer, "sh_enable can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "sh_enable can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_disable") == 0) {
@@ -604,8 +606,8 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("sh_disabled = 1");
 			}
 			else {
-				sprintf(buffer, "sh_disable can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "sh_disable can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_unlock") == 0) {
@@ -614,20 +616,20 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("sh_locked = 0");
 			}
 			else {
-				sprintf(buffer, "sh_unlock can only be used by an admin\n");
-				Msg(buffer);
+				sprintf(buf, "sh_unlock can only be used by an admin\n");
+				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "sh ", 3) == 0) {
 			struct stat st;
 			if (sh_disabled || stat("sh_disable", &st) == 0) {
 				if (strcmp(server_name, "irc.blinkenshell.org") == 0)
-					sprintf(buffer, "%s: sh is permanently disabled", raw.nick);
+					sprintf(buf, "%s: sh is permanently disabled", raw.nick);
 				else
-					sprintf(buffer, "%s: sh is temporarily disabled, "
+					sprintf(buf, "%s: sh is temporarily disabled, "
 						"try again later or ask an admin to enable it", raw.nick);
 
-				Msg(buffer);
+				Msg(buf);
 				continue;
 			}
 			// Remmember, touch $srcdir/sh_lock to have !sh commands run in a chroot
@@ -646,9 +648,9 @@ strcmp(raw.command, "NICK")!=0) {
 
 				FILE *fr = fopen("chroot/home/dummy/cmd.output", "r");
 				if (fr == NULL) {
-					sprintf(buffer, "codybot::ThreadRXFunc() error: Cannot "
+					sprintf(buf, "codybot::ThreadRXFunc() error: Cannot "
 						"open chroot/home/dummy/cmd.output: %s", strerror(errno));
-					Msg(buffer);
+					Msg(buf);
 					continue;
 				}
 
@@ -675,8 +677,8 @@ strcmp(raw.command, "NICK")!=0) {
 					system("cat chroot/home/dummy/cmd.output |nc termbin.com 9999 >cmd.url");
 					fr = fopen("cmd.url", "r");
 					if (fr == NULL) {
-						sprintf(buffer, "codybot::ThreadRXFunc() error: Cannot open cmd.url: %s", strerror(errno));
-						Msg(buffer);
+						sprintf(buf, "codybot::ThreadRXFunc() error: Cannot open cmd.url: %s", strerror(errno));
+						Msg(buf);
 						continue;
 					}
 					fgets(output, 4096, fr);

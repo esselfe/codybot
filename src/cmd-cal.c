@@ -11,7 +11,6 @@ void Cal(void) {
 
 	FILE *fp = fopen("cmd.output", "r");
 	if (fp == NULL) {
-		char buffer[1024];
 		sprintf(buffer, "##codybot::Cal() error: Cannot open cmd.output: %s\n",
 			strerror(errno));
 		Msg(buffer);

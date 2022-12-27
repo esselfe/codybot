@@ -18,9 +18,9 @@ extern struct tm *tm0;
 extern time_t t0, ctcp_prev_time; // ctcp antiflood considerations
 extern char ctcp_prev_nick[128];
 extern char *log_filename; // $srcdir/codybot.log if not set, see main()
-// 'buffer' is always for immediate use. 'rx' is for received raw data. 'cmd' is
+// 'buffer' is always for immediate use. 'cmd' is
 // mostly used in system() calls. 'log' is used for data to $srcdir/codybot.log
-extern char *buffer, *buffer_rx, *buffer_cmd, *buffer_log;
+extern char *buffer, *buffer_cmd, *buffer_log;
 extern char trigger_char; // character which is prefixed to commands in IRC chat readout
 extern char *current_channel; // used as changeable default channel for console 
 							  // 'msg/fortune' cmd

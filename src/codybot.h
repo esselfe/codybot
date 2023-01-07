@@ -5,8 +5,9 @@
 #include <openssl/ssl.h>
 
 // To control which compiler !cc use. (via var cc_compiler)
-#define CC_COMPILER_GCC 1
-#define CC_COMPILER_TCC 2
+#define CC_COMPILER_GCC   1
+#define CC_COMPILER_TCC   2
+#define CC_COMPILER_CLANG 3
 
 // Globals from codybot.c
 extern const char *codybot_version_string;

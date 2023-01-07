@@ -67,6 +67,8 @@ void CC(struct raw_line *rawp) {
 			"prog.c -o prog 2>cmd.output");
 	else if (cc_compiler == CC_COMPILER_TCC)
 		ret = system("tcc -lm -o prog prog.c 2>cmd.output");
+	else if (cc_compiler == CC_COMPILER_CLANG)
+		ret = system("clang -o prog prog.c 2>cmd.output");
 
 	if (ret == 0) {
 		sprintf(buffer, "timeout %ds ./prog &> cmd.output; echo $? > cmd.ret",

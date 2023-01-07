@@ -297,6 +297,11 @@ strcmp(raw.command, "NICK")!=0) {
 			sprintf(buf, "example: ,cc printf(\"this\\n\");");
 			Msg(buf);
 		}
+		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc clang") == 0) {
+			cc_compiler = CC_COMPILER_CLANG;
+			Msg("Compiler is now clang");
+			continue;
+		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc gcc") == 0) {
 			cc_compiler = CC_COMPILER_GCC;
 			Msg("Compiler is now gcc");
@@ -308,11 +313,18 @@ strcmp(raw.command, "NICK")!=0) {
 			continue;
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc_compiler") == 0) {
-			if (cc_compiler == CC_COMPILER_GCC)
+			if (cc_compiler == CC_COMPILER_CLANG) {
+				Msg("Compiler is clang");
+				continue;
+			}
+			else if (cc_compiler == CC_COMPILER_GCC) {
 				Msg("Compiler is gcc");
-			else if (cc_compiler == CC_COMPILER_TCC)
+				continue;
+			}
+			else if (cc_compiler == CC_COMPILER_TCC) {
 				Msg("Compiler is tcc");
-			continue;
+				continue;
+			}
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "cc ", 3) == 0) {
 			struct stat st2;

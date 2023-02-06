@@ -1,21 +1,30 @@
 #!/bin/bash
 
+[ $UID -eq 0 ] || {
+	echo "initial-setup: This script must be run as root."
+	exit 1
+}
+
 echo "Adding group 'codybot'"
-sudo groupadd codybot
+getent group codybot &>/dev/null ||
+	groupadd codybot
 echo "Adding user 'codybot'"
-sudo useradd -m -s $(which bash) -g codybot codybot
+getent passwd codybot &>/dev/null ||
+	useradd -m -s $(which bash) -g codybot codybot
 echo "Adding current user to the codybot group"
 [ -z "$USER" ] && USER=user
 [ "$USER" = "root" ] && USER=user
-sudo usermod -G codybot $USER
+getent group codybot | grep $USER &>/dev/null ||
+	usermod -G codybot $USER
 echo "Creating runtime files: cmd.input cmd.output cmd.ret cmd.url dict.output" \
 " dict.url log.fifo prog prog.c stats tmp"
 touch cmd.input cmd.output cmd.ret cmd.url dict.output dict.url prog prog.c stats
 mkfifo log.fifo
 mkdir -v tmp
-sudo chown -v codybot:codybot cmd.input cmd.output cmd.ret cmd.url dict.output \
+chown -v codybot:codybot cmd.input cmd.output cmd.ret cmd.url dict.output \
   dict.url log.fifo prog prog.c stats tmp
-sudo chmod g+w log.fifo tmp
-sudo chmod 755 prog
-sudo ln -sv $(pwd) /home/codybot/codybot
+chmod g+w log.fifo tmp
+chmod 755 prog
+[ -L /home/codybot/codybot ] ||
+	ln -sv $(pwd) /home/codybot/codybot
 

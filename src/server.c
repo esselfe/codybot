@@ -168,7 +168,7 @@ void ServerConnect(void) {
 	sprintf(buffer, "NICK %s\n", nick);
 	MsgRaw(buffer);
 
-	sprintf(buffer, "USER %s %s %s %s\n", nick, hostname,
+	sprintf(buffer, "USER %s %s %s %s\n", getlogin(), hostname,
 		server_name, full_user_name);
 	MsgRaw(buffer);
 }

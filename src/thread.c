@@ -64,6 +64,13 @@ void *ThreadRunFunc(void *argp) {
 		return NULL;
 	}
 
+	struct stat sto;
+	stat("cmd.output", &sto);
+	if (sto.st_size == 0) {
+		Msg("(No output)");
+		return NULL;
+	}
+
 	fp = fopen("cmd.output", "r");
 	if (fp == NULL) {
 		sprintf(buf, "codybot::ThreadRunFunc() error: Cannot open cmd.output: %s",
@@ -83,6 +90,11 @@ void *ThreadRunFunc(void *argp) {
 			++lines_total;
 	}
 	fseek(fp, 0, SEEK_SET);
+
+	if (sto.st_size == 1 && lines_total == 1) {
+		Msg("(No output)");
+		return NULL;
+	}
 
 	unsigned int lines_max = 4;
 	if (strcmp(raw.channel, "#codybot") == 0)

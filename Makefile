@@ -6,10 +6,10 @@ OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o $(OBJDIR)/cmd-cal.o \
 $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o $(OBJDIR)/cmd-chars.o \
 $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o $(OBJDIR)/cmd-dict.o \
 $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o \
-$(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o \
-$(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o $(OBJDIR)/console.o \
-$(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o $(OBJDIR)/raw.o \
-$(OBJDIR)/thread.o
+$(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-sh.o $(OBJDIR)/cmd-slap.o \
+$(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o \
+$(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o\
+$(OBJDIR)/raw.o $(OBJDIR)/thread.o
 PROGNAME = codybot
 
 .PHONY: tcc default all prepare clean
@@ -59,6 +59,9 @@ $(OBJDIR)/cmd-joke.o: src/cmd-joke.c
 
 $(OBJDIR)/cmd-rainbow.o: src/cmd-rainbow.c
 	gcc -c $(CFLAGS) src/cmd-rainbow.c -o $(OBJDIR)/cmd-rainbow.o
+
+$(OBJDIR)/cmd-sh.o: src/cmd-sh.c
+	gcc -c $(CFLAGS) src/cmd-sh.c -o $(OBJDIR)/cmd-sh.o
 
 $(OBJDIR)/cmd-slap.o: src/cmd-slap.c
 	gcc -c $(CFLAGS) src/cmd-slap.c -o $(OBJDIR)/cmd-slap.o

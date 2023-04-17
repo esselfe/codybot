@@ -91,6 +91,8 @@ void Foldoc(struct raw_line *rawp);
 void Fortune(struct raw_line *rawp);
 void Joke(struct raw_line *rawp);
 void Rainbow(struct raw_line *rawp);
+void ShRunStart(char *command);
+void *ShRunFunc(void *argp);
 void SlapCheck(struct raw_line *rawp);
 void Stats(struct raw_line *rawp);
 void Weather(struct raw_line *rawp);
@@ -125,8 +127,6 @@ void ServerConnect(void);
 void ServerClose(void);
 
 // from thread.c
-void ThreadRunStart(char *command);
-void *ThreadRunFunc(void *argp);
 void ThreadRXStart(void);
 void *ThreadRXFunc(void *argp);
 

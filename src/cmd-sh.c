@@ -50,7 +50,7 @@ void *ShRunFunc(void *argp) {
 
 	FILE *fp = fopen("cmd.ret", "r");
 	if (fp == NULL) {
-		sprintf(buf, "codybot::ThreadRunFunc() error: Cannot open cmd.ret: %s",
+		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
 			strerror(errno));
 		Msg(buf);
 	}
@@ -73,7 +73,7 @@ void *ShRunFunc(void *argp) {
 
 	fp = fopen("cmd.output", "r");
 	if (fp == NULL) {
-		sprintf(buf, "codybot::ThreadRunFunc() error: Cannot open cmd.output: %s",
+		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
 			strerror(errno));
 		Msg(buf);
 		return NULL;
@@ -139,7 +139,7 @@ void *ShRunFunc(void *argp) {
 		system("cat cmd.output |nc termbin.com 9999 > cmd.url");
 		FILE *fp2 = fopen("cmd.url", "r");
 		if (fp2 == NULL)
-			fprintf(stderr, "##codybot::ThreadRXFunc() error: Cannot open cmd.url: %s\n",
+			fprintf(stderr, "##codybot::ShRunFunc() error: Cannot open cmd.url: %s\n",
 				strerror(errno));
 		else {
 			char url[1024];

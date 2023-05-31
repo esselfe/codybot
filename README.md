@@ -1,13 +1,13 @@
 # Codybot
 
-20190824-20210114
+20190824-20230531
 
 ## Overview
 
 `codybot` is an IRC bot written with the C programming language, providing users
 with fortune cookies, jokes, oneliner C/C++ compilation, shell access, text colorization,
 ascii art, special characters and weather per city. It was inspired by candide on
-Freenode, a great bot written in Perl (see https://github.com/pragma-/pbot/).
+Libera.chat, a great bot written in Perl (see https://github.com/pragma-/pbot/).
 
 The bot can connect to `irc.libera.chat:6697` or any specified server and port;
 it defaults to port 6697 with SSL.
@@ -69,7 +69,7 @@ This differentiation may also be implied by the presence or absense of a leading
 
 To see available commands, send `!help`.
 
-To trigger a fortune cookie, send `!fortune`. The fortune cookie database file is `data-fortunes.txt`.
+To trigger a fortune cookie, send `!fortune`. The fortune cookie database file is `data/fortunes.txt`.
 It's made of files in `/usr/share/games/fortunes` using the system-provided fortune package.
 (see https://github.com/shlomif/fortune-mod)
 
@@ -79,14 +79,14 @@ content and is far from containing all the site's jokes! There's 25 jokes as of 
 To get weather report from https://wttr.in send `!weather `_`citynamehere`_; this should return
 something like "_Montreal: Partly cloudy +2*C feels like -2*C 15km/h 0.0mm_"
 
-To run a shell command from the chat onto the host of codybot, type `!sh `_`command and args`_
+To run a shell command from the chat onto the host of codybot, send `!sh `_`command and args`_
 e.g. `!sh ls /home/codybot`. You can disable this by creating a file called `sh_disable`
 (as always, in the program's current directory). You can also type `sh_enable` or `sh_disable`
 in the console, or `!sh_enable` or `!sh_disable` in the channel (requires to be in the admins list).  
 
 The other commands are:  
 `!about` to retrieve the author and source code link.  
-`!admins` to show current administrator of the bot who can run special commands like `!admins reload`.  
+`!admins` to show current administrators of the bot who can run special commands like `!admins reload`.  
 `!ascii` to show an ascii art image.  
 `!cc printf("This is awesome!\n");` to compile C one-liners.  
 `!chars` to show special UTF-8 characters.  
@@ -128,7 +128,7 @@ Update 210228 - new docker image available!
 You can now run codybot more safely by using a small or full docker container.
 
 Currently the "small" image is 245MB download, 785MB installed and
-the 'full" image is 1GB download, 2.5GB installed that's the downpart.
+the 'full" image is 2.16GB download, 7GB installed that's the downpart.
 Install docker, make sure the services are started (containerd+docker),
 and run those commands to fetch and start the image:
 (replace "small" with "full" if you want to)
@@ -171,7 +171,7 @@ You can also limit the permitted storage size by adding "--tmpfs /home/user/cody
 - Main releases: https://github.com/esselfe/codybot/releases  
 - Archives:
   - https://esselfe.ca/codybot/  
-  - https://hobby.esselfe.ca/code/codybot/  
+  - https://hobby.esselfe.ca/codybot/  
 
 ----
 

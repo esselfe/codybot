@@ -1,5 +1,5 @@
 
-CFLAGS = -std=c11 -Wall -Werror -D_GNU_SOURCE -O2
+CFLAGS = -std=c11 -Wall -D_GNU_SOURCE -O2
 LDFLAGS = -lpthread -lssl -lcrypto -lmagic
 OBJDIR = obj
 OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o $(OBJDIR)/cmd-cal.o \

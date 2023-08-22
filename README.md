@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20230531
+20190824-20230822
 
 ## Overview
 
@@ -22,14 +22,14 @@ binutils gcc make libmagic-dev libssl-dev`. On Arch install `make gcc`.
 To compile the program, just run `make` within the source directory, and run with  
 `./codybot -n `_`YourBotNick`_
 
-(Personally I run the bot in a virtual machine to limit general filesystem access
+(Personally I run the bot in a docker container to limit general filesystem access
 via the `!sh` command; see the "chroot" and "docker" sections below.)
 
 Run `./codybot --help` to see all program options.
 
 There is no installation mechanism, you should use the source directory or move
-the files where you want. The files `data-ascii.txt`, `data-chars.txt`, `data-fortunes.txt`,
-`data-jokes.txt` and `stats` must be in the program's current working directory
+the files where you want. The files `data/ascii.txt`, `data/chars.txt`, `data/fortunes.txt`,
+`data/jokes.txt` and `stats` must be in the program's current working directory
 otherwise the program will not run. Other control files (detailed below) must
 also be in the current working directory.
 
@@ -54,7 +54,7 @@ and uninvited bots are not permitted, so always get permission if you don't own
 the channel. (If you created a channel by joining an empty one, you now own it,
 so you can give yourself permission to run codybot.)
 
-## Using the Bot
+## Using codybot
 
 The bot responds to commands on its stdin (usually the terminal you run it from),
 and in any channels it's joined. Commands in channels are only recognized if they
@@ -77,7 +77,7 @@ To get a random joke send `!joke`. This database is hand written using https://w
 content and is far from containing all the site's jokes! There's 25 jokes as of 20200510.
 
 To get weather report from https://wttr.in send `!weather `_`citynamehere`_; this should return
-something like "_Montreal: Partly cloudy +2*C feels like -2*C 15km/h 0.0mm_"
+something like "_Montreal: Partly cloudy 2*C/35.6*F feels like -2*C/28.4F 15km/h 0.0mm_"
 
 To run a shell command from the chat onto the host of codybot, send `!sh `_`command and args`_
 e.g. `!sh ls /home/codybot`. You can disable this by creating a file called `sh_disable`
@@ -127,14 +127,19 @@ Update 210228 - new docker image available!
 
 You can now run codybot more safely by using a small or full docker container.
 
-Currently the "small" image is 245MB download, 785MB installed and
-the 'full" image is 2.16GB download, 7GB installed that's the downpart.
+Currently the "small" image is 547MB download, 1.6GB installed and
+the "full" image is 1.96GB download, 5.26GB installed.
 Install docker, make sure the services are started (containerd+docker),
 and run those commands to fetch and start the image:
 (replace "small" with "full" if you want to)
 
     docker pull esselfe/lunar-codybot:small
     docker run -it esselfe/lunar-codybot:small bash
+
+or
+
+    docker pull esselfe/debian-codybot:small
+    docker run -it esselfe/debian-codybot:small bash
 
 Once in the container, run:
 

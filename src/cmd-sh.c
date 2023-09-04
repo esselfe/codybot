@@ -22,33 +22,26 @@ void ShRunStart(char *command) {
 }
 
 void *ShRunFunc(void *argp) {
+	char buf[4096];
+	char cmd[1024];
 	char *text = strdup(raw.text);
 	printf("&& Thread started ::%s::\n", text);
-	char *cp = text;
-	char buf[4096]; // don't clash with the global buffer
-	char cmd[4096];
-	sprintf(cmd, "timeout %ds bash -c 'cd tmp; ", cmd_timeout);
-	unsigned int cnt = strlen(cmd);
-	while (1) {
-		if (*cp == '\n' || *cp == '\0') {
-			cmd[cnt] = '\0';
-			break;
-		}
-/*		else if (*cp == '"') {
-			cmd[cnt++] = '\\';
-			cmd[cnt++] = '"';
-		}
-*/		else {
-			cmd[cnt] = *cp;
-			++cnt;
-		}
-		++cp;
+	
+	FILE *fp = fopen("prog.sh", "w+");
+	if (fp == NULL) {
+		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
+			strerror(errno));
+		Msg(buf);
 	}
-	strcat(cmd, "' &> cmd.output; echo $? >cmd.ret");
+	fputs(text, fp);
+	fclose(fp);
+	
+	sprintf(cmd, "timeout %ds bash prog.sh &> cmd.output; echo $? >cmd.ret",
+		cmd_timeout);
 	Log(LOCAL, cmd);
 	system(cmd);
 
-	FILE *fp = fopen("cmd.ret", "r");
+	fp = fopen("cmd.ret", "r");
 	if (fp == NULL) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
 			strerror(errno));

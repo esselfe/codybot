@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <curl/curl.h>
 
 #include "codybot.h"
 
@@ -116,6 +117,8 @@ int main(int argc, char **argv) {
 
 	signal(SIGINT, SignalFunc);
 
+	curl_global_init(CURL_GLOBAL_ALL);
+	
 	int c;
 	while (1) {
 		c = getopt_long(argc, argv, short_options, long_options, NULL);
@@ -259,7 +262,9 @@ int main(int argc, char **argv) {
 	// Mainloop
 	ThreadRXStart();
 	ConsoleReadInput();
-	
+
+	curl_global_cleanup();
+		
 	ServerClose();
 
 	return 0;

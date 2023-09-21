@@ -1,15 +1,15 @@
 
 CFLAGS = -std=c11 -Wall -D_GNU_SOURCE -O2
-LDFLAGS = -lpthread -lssl -lcrypto -lmagic
+LDFLAGS = -lpthread -lssl -lcrypto -lmagic -lcurl -ljson-c
 OBJDIR = obj
-OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o $(OBJDIR)/cmd-cal.o \
-$(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o $(OBJDIR)/cmd-chars.o \
-$(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o $(OBJDIR)/cmd-dict.o \
-$(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o \
-$(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-sh.o $(OBJDIR)/cmd-slap.o \
-$(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o \
-$(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o\
-$(OBJDIR)/raw.o $(OBJDIR)/thread.o
+OBJS = $(OBJDIR)/admin.o $(OBJDIR)/api.o $(OBJDIR)/cmd-ascii-art.o \
+$(OBJDIR)/cmd-cal.o $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o \
+$(OBJDIR)/cmd-chars.o $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o \
+$(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o \
+$(OBJDIR)/cmd-joke.o $(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-sh.o \
+$(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o \
+$(OBJDIR)/codybot.o $(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o \
+$(OBJDIR)/server.o $(OBJDIR)/raw.o $(OBJDIR)/thread.o
 PROGNAME = codybot
 
 .PHONY: tcc default all prepare clean
@@ -23,6 +23,9 @@ prepare:
 
 $(OBJDIR)/admin.o: src/admin.c
 	gcc -c $(CFLAGS) src/admin.c -o $(OBJDIR)/admin.o
+
+$(OBJDIR)/api.o: src/api.c
+	gcc -c $(CFLAGS) src/api.c -o $(OBJDIR)/api.o
 
 $(OBJDIR)/cmd-ascii-art.o: src/cmd-ascii-art.c
 	gcc -c $(CFLAGS) src/cmd-ascii-art.c -o $(OBJDIR)/cmd-ascii-art.o

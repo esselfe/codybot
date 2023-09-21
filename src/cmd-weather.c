@@ -91,12 +91,14 @@ void *WeatherFunc(void *ptr) {
 		++cp;
 	}
 	memset(rawp->text, 0, strlen(rawp->text));
+	
+	APIFetch(city_conv);
 
-	char filename[1024];
-	sprintf(filename, "/tmp/codybot-weather-%s.txt", city_conv);
-	sprintf(buf, "wget -t 1 -T 24 https://wttr.in/%s?format=%%C:%%t:%%f:%%w:%%p "
-		"-O %s", city_conv, filename);
-	system(buf);
+//	char filename[1024];
+//	sprintf(filename, "/tmp/codybot-weather-%s.txt", city_conv);
+//	sprintf(buf, "wget -t 1 -T 24 https://wttr.in/%s?format=%%C:%%t:%%f:%%w:%%p "
+//		"-O %s", city_conv, filename);
+//	system(buf);
 
 	/*temp2[strlen(temp2)-1] = ' ';
 	int deg_celsius = atoi(temp2);
@@ -104,7 +106,7 @@ void *WeatherFunc(void *ptr) {
 	sprintf(buffer_cmd, "%s: %s %dC/%dF", city, temp, deg_celsius, deg_farenheit);
 	Msg(buffer_cmd);*/
 
-	FILE *fp = fopen(filename, "r");
+/*	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
 		sprintf(buf, "codybot error: Cannot open %s: %s",
 			filename, strerror(errno));
@@ -233,22 +235,22 @@ void *WeatherFunc(void *ptr) {
 	}
 	sprintf(buf, "%s: %s", city, str2);
 	Msg(buf);
-
+*/
 	/*FILE *fw = fopen("tmp/data", "w");
 	for (c = str; *c != '\0'; c++)
 		fprintf(fw, ":%c:%d\n", *c, (int)*c);
 	fclose(fw);*/
 
-	free(str);
-	free(str2);
+//	free(str);
+//	free(str2);
 	RawLineFree(rawp);
-	
+/*	
 	if (!debug) {
 		sprintf(buf, "rm %s", filename);
 		system(buf);
 		memset(buf, 0, 4096);
 	}
-
+*/
 	return NULL;
 }
 

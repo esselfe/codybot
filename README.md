@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20230822
+20190824-20230921
 
 ## Overview
 
@@ -76,8 +76,9 @@ It's made of files in `/usr/share/games/fortunes` using the system-provided fort
 To get a random joke send `!joke`. This database is hand written using https://www.funnyshortjokes.com
 content and is far from containing all the site's jokes! There's 25 jokes as of 20200510.
 
-To get weather report from https://wttr.in send `!weather `_`citynamehere`_; this should return
+To get weather report from https://weatherapi.com send `!weather `_`citynamehere`_; this should return
 something like "_Montreal: Partly cloudy 2*C/35.6*F feels like -2*C/28.4F 15km/h 0.0mm_"
+Note that you will need an API key to use this feature (It's free).
 
 To run a shell command from the chat onto the host of codybot, send `!sh `_`command and args`_
 e.g. `!sh ls /home/codybot`. You can disable this by creating a file called `sh_disable`

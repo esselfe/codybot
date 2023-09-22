@@ -8,6 +8,8 @@
 #include "codybot.h"
 
 int main(int argc, char **argv) {
+	curl_global_init(CURL_GLOBAL_ALL);
+	
   while(1) {
 	// Retrieve API key
 	///////////////////
@@ -157,5 +159,6 @@ int main(int argc, char **argv) {
 	fputs("done", fp);
 	fclose(fp);
   }
+	curl_global_cleanup();
 }
 

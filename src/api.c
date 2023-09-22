@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 #include <curl/curl.h>
@@ -40,15 +39,6 @@ void APIFetch(char *city) {
 	fclose(fp);
 	curl_easy_cleanup(handle);
 	
-	/*fp = fopen("cmd.output", "r");
-	if (fp == NULL) {
-		sprintf(buffer, "codybot error: Cannot open cmd.output: %s",
-			strerror(errno));
-		Msg(buffer);
-		curl_easy_cleanup(handle);
-		return;
-	}*/
-
 	json_object *root = json_object_from_file("cmd.output");
 	
 	json_object *location = json_object_object_get(root, "location");
@@ -114,12 +104,5 @@ void APIFetch(char *city) {
 	
 	Msg(str);
 	free(str);
-	
-	/*char *output = malloc(4096);
-	memset(output, 0, 4096);
-	fgets(output, 4095, fp);
-	Msg(output);
-	free(output);
-	fclose(fp);*/
 }
 

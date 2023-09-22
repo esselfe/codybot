@@ -128,6 +128,7 @@ void *WeatherFunc(void *ptr) {
 	fgets(str, 1023, fp);
 	fclose(fp);
 	Msg(str);
+	free(str);
 	
 	return NULL;
 }

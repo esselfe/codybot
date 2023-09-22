@@ -61,9 +61,6 @@ struct raw_line {
 };
 extern struct raw_line raw;
 
-// from api.c
-void APIFetch(char *city);
-
 // from admin.c
 struct Admin {
 	struct Admin *prev, *next; // used to navigate the list in a loop

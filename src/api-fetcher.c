@@ -7,38 +7,69 @@
 
 #include "codybot.h"
 
-// Get your API key @ weatherapi.com, it's free
-static const char *api_key = "a8b2c3d4e5f6...";
-
-void APIFetch(char *city) {
+int main(int argc, char **argv) {
+  while(1) {
+	// Retrieve API key
+	///////////////////
+	FILE *fp = fopen("api.key", "r");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open api.key: %s",
+			strerror(errno));
+		continue;
+	}
+	char *key = malloc(1024);
+	memset(key, 0, 1024);	
+	fgets(key, 1023, fp);
+	fclose(fp);
+	
+	// Remove the newline at the end of the key string
+	if (*(key+strlen(key)-1) == '\n')
+		*(key+strlen(key)-1) = '\0';
+	
+	// Retrieve city from fifo
+	///////////////////
+	fp = fopen("api-fetch", "r");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open api-fetch: %s",
+			strerror(errno));
+		continue;
+	}
+	char *city = malloc(1024);
+	memset(city, 0, 1024);	
+	fgets(city, 1023, fp);
+	fclose(fp);
+	
+	// Perform the fetching
+	///////////////////////
 	CURL *handle = curl_easy_init();
 	
 	char url[4096];
 	memset(url, 0, 4096);
 	sprintf(url, "https://api.weatherapi.com/v1/current.json"
-		"?key=%s&q=%s", api_key, city);
+		"?key=%s&q=%s", key, city);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
+	free(key);
 	
-	FILE *fp = fopen("cmd.output", "w");
+	fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
-		sprintf(buffer, "codybot error: Cannot open cmd.output: %s",
+		printf("api-fetcher error: Cannot open cmd.output: %s",
 			strerror(errno));
-		Msg(buffer);
 		curl_easy_cleanup(handle);
-		return;
+		continue;
 	}
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
 	
 	CURLcode ret = curl_easy_perform(handle);
 	if (ret != CURLE_OK) {
-		sprintf(buffer, "codybot error (curl): %s\n", curl_easy_strerror(ret));
-		Msg(buffer);
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
 		curl_easy_cleanup(handle);
-		return;
+		continue;
 	}
 	fclose(fp);
 	curl_easy_cleanup(handle);
-	
+
+	// Parse the json results
+	/////////////////////////
 	json_object *root = json_object_from_file("cmd.output");
 	
 	json_object *location = json_object_object_get(root, "location");
@@ -59,6 +90,8 @@ void APIFetch(char *city) {
 	json_object *gust_m = json_object_object_get(current, "gust_mph");
 	json_object *precip = json_object_object_get(current, "precip_mm");
 	
+	// Create final output string
+	/////////////////////////////
 	char *str = malloc(4096);
 	memset(str, 0, 4096);
 	char *value = (char *)json_object_get_string(name);
@@ -102,7 +135,27 @@ void APIFetch(char *city) {
 	
 	json_object_put(root);
 	
-	Msg(str);
-	free(str);
+	// Put the final output in a file
+	////////////////////////////
+	fp = fopen("cmd.output", "w");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open cmd.output: %s",
+			strerror(errno));
+		continue;
+	}
+	fputs(str, fp);
+	fclose(fp);
+	
+	// Tell codybot it's ready
+	///////////////////
+	fp = fopen("api-fetch", "w");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open api-fetch: %s",
+			strerror(errno));
+		continue;
+	}
+	fputs("done", fp);
+	fclose(fp);
+  }
 }
 

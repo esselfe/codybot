@@ -1,8 +1,8 @@
 
 CFLAGS = -std=c11 -Wall -D_GNU_SOURCE -O2
-LDFLAGS = -lpthread -lssl -lcrypto -lmagic -lcurl -ljson-c
+LDFLAGS = -lpthread -lssl -lcrypto -lmagic
 OBJDIR = obj
-OBJS = $(OBJDIR)/admin.o $(OBJDIR)/api.o $(OBJDIR)/cmd-ascii-art.o \
+OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o \
 $(OBJDIR)/cmd-cal.o $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o \
 $(OBJDIR)/cmd-chars.o $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o \
 $(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o \
@@ -11,21 +11,19 @@ $(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o \
 $(OBJDIR)/codybot.o $(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o \
 $(OBJDIR)/server.o $(OBJDIR)/raw.o $(OBJDIR)/thread.o
 PROGNAME = codybot
+PROGNAME_API = api-fetcher
 
 .PHONY: tcc default all prepare clean
 
 default: all
 
-all: prepare $(OBJS) $(PROGNAME)
+all: prepare $(OBJS) $(PROGNAME_API) $(PROGNAME)
 
 prepare:
 	@[ -d $(OBJDIR) ] || mkdir $(OBJDIR) 2>/dev/null || true
 
 $(OBJDIR)/admin.o: src/admin.c
 	gcc -c $(CFLAGS) src/admin.c -o $(OBJDIR)/admin.o
-
-$(OBJDIR)/api.o: src/api.c
-	gcc -c $(CFLAGS) src/api.c -o $(OBJDIR)/api.o
 
 $(OBJDIR)/cmd-ascii-art.o: src/cmd-ascii-art.c
 	gcc -c $(CFLAGS) src/cmd-ascii-art.c -o $(OBJDIR)/cmd-ascii-art.o
@@ -96,11 +94,14 @@ $(OBJDIR)/server.o: src/server.c
 $(OBJDIR)/thread.o: src/thread.c
 	gcc -c $(CFLAGS) src/thread.c -o $(OBJDIR)/thread.o
 
+$(PROGNAME_API): src/api-fetcher.c
+	gcc $(CFLAGS) src/api-fetcher.c -o $(PROGNAME_API) -ljson-c -lcurl
+
 $(PROGNAME): $(OBJS)
 	gcc $(CFLAGS) $(OBJS) -o $(PROGNAME) $(LDFLAGS)
 
 clean:
-	@rm -rv $(OBJDIR) $(PROGNAME) $(PROGRUN) 2>/dev/null || true
+	@rm -rv $(OBJDIR) $(PROGNAME_API) $(PROGNAME) $(PROGRUN) 2>/dev/null || true
 
 tcc:
 	tcc -lmagic -lssl -o $(PROGNAME) src/*.c

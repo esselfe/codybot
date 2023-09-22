@@ -90,10 +90,44 @@ void *WeatherFunc(void *ptr) {
 		++cnt_conv;
 		++cp;
 	}
-	
-	APIFetch(city_conv);
-
 	RawLineFree(rawp);
+	
+	// Give the city to the api-fetcher program
+	FILE *fp = fopen("api-fetch", "w");
+	if (fp == NULL) {
+		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
+			strerror(errno));
+		Msg(buffer);
+		return NULL;
+	}
+	fputs(city_conv, fp);
+	fclose(fp);
+	
+	// Wait until it's ready
+	fp = fopen("api-fetch", "r");
+	if (fp == NULL) {
+		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
+			strerror(errno));
+		Msg(buffer);
+		return NULL;
+	}
+	char *str = malloc(1024);
+	memset(str, 0, 1024);
+	fgets(str, 1023, fp);
+	fclose(fp);
+	
+	// Read and send results
+	fp = fopen("cmd.output", "r");
+	if (fp == NULL) {
+		sprintf(buffer, "codybot error: Cannot open cmd.output: %s",
+			strerror(errno));
+		Msg(buffer);
+		return NULL;
+	}
+	memset(str, 0, 1024);
+	fgets(str, 1023, fp);
+	fclose(fp);
+	Msg(str);
 	
 	return NULL;
 }

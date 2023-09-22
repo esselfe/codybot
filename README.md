@@ -76,9 +76,11 @@ It's made of files in `/usr/share/games/fortunes` using the system-provided fort
 To get a random joke send `!joke`. This database is hand written using https://www.funnyshortjokes.com
 content and is far from containing all the site's jokes! There's 25 jokes as of 20200510.
 
-To get weather report from https://weatherapi.com send `!weather `_`citynamehere`_; this should return
-something like "_Montreal: Partly cloudy 2*C/35.6*F feels like -2*C/28.4F 15km/h 0.0mm_"
+To get weather report from https://www.weatherapi.com send `!weather `_`citynamehere`_;
+this should return something like 
+"_Montreal, Quebec, Canada: Partly cloudy, 2.6*C/36.7*F feels like -2.4*C/27.7F 15.0kmh/9.3mph, gust 20.4kmh/12.7mph, 0.0mm_"
 Note that you will need an API key to use this feature (It's free).
+Just put the key in the api.key file.
 
 To run a shell command from the chat onto the host of codybot, send `!sh `_`command and args`_
 e.g. `!sh ls /home/codybot`. You can disable this by creating a file called `sh_disable`

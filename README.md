@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20230921
+20190824-20230923
 
 ## Overview
 
@@ -14,10 +14,11 @@ it defaults to port 6697 with SSL.
 
 ## Compile and Run
 
-In order to compile the source code into an executable, some dependencies are
-required to be installed. On RPM-based systems, install `glibc-devel binutils
-gcc make file-devel libopenssl-devel`. On DEB-based systems install `libc6-dev
-binutils gcc make libmagic-dev libssl-dev`. On Arch install `make gcc`. 
+In order to compile the source code into an executable, some dependencies are  
+required to be installed. On RPM-based systems, install `glibc-devel binutils`  
+`gcc make file-devel openssl-devel libcurl-devel json-c-devel`. On DEB-based  
+systems install `libc6-dev binutils gcc make libmagic-dev libssl-dev`  
+`libcurl4-openssl-dev libjson-c-dev`. On Arch install `make gcc`.  
 
 To compile the program, just run `make` within the source directory, and run with  
 `./codybot -n `_`YourBotNick`_

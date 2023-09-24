@@ -151,6 +151,7 @@ Once in the container, run:
 	tmux
 	su - user
 	cd codybot
+	./api-fetcher &
 	scripts/logd.sh &
 	<ctrl+b><c>
 	su - codybot

@@ -6,31 +6,31 @@
 
 #include "codybot.h"
 
-// Array containing time at which !weather have been run
-unsigned long weather_usage[10];
+// Array containing time at which !astro have been run
+static unsigned long astro_usage[10];
 
 // Pop the first item
-void WeatherDecayUsage(void) {
+static void AstroDecayUsage(void) {
 	int cnt;
 	for (cnt = 0; cnt < 9; cnt++)
-		weather_usage[cnt] = weather_usage[cnt+1];
+		astro_usage[cnt] = astro_usage[cnt+1];
 
-	weather_usage[cnt] = 0;
+	astro_usage[cnt] = 0;
 }
 
 // Return true if permitted, false if quota reached
-int WeatherCheckUsage(void) {
+static int AstroCheckUsage(void) {
 	int cnt;
 	for (cnt = 0; cnt < 10; cnt++) {
 		// If there's available slot
-		if (weather_usage[cnt] == 0) {
-			weather_usage[cnt] = time(NULL);
+		if (astro_usage[cnt] == 0) {
+			astro_usage[cnt] = time(NULL);
 			return 1;
 		}
 		// If usage is complete and first item dates from over 30 minutes
-		else if (cnt == 9 && weather_usage[0] < (time(NULL) - (60*30))) {
-			WeatherDecayUsage();
-			weather_usage[cnt] = time(NULL);
+		else if (cnt == 9 && astro_usage[0] < (time(NULL) - (60*30))) {
+			AstroDecayUsage();
+			astro_usage[cnt] = time(NULL);
 			return 1;
 		}
 	}
@@ -38,30 +38,18 @@ int WeatherCheckUsage(void) {
 	return 0;
 }
 
-void *WeatherFunc(void *ptr) {
+static void *AstroFunc(void *ptr) {
 	struct raw_line *rawp = RawLineDup((struct raw_line *)ptr);
 	char buf[4096];
 	memset(buf, 0, 4096);
 
-	if (!WeatherCheckUsage()) {
-		Msg("Weather quota reached, maximum 10 times every 30 minutes.");
+	if (!AstroCheckUsage()) {
+		Msg("Astro quota reached, maximum 10 times every 30 minutes.");
 		return NULL;
 	}
 
-	// Check for "kill" found in ",weather `pkill${IFS}codybot`" which kills the bot
-	char *c = rawp->text;
-	while (1) {
-		if (*c == '\0' || *c == '\n')
-			break;
-		if (strlen(c) >= 5 && strncmp(c, "kill", 4) == 0) {
-			Msg("weather: contains a blocked term...");
-			return NULL;
-		}
-		++c;
-	}
-
 	unsigned int cnt = 0, cnt_conv = 0;
-	char city[128], city_conv[128], *cp = rawp->text + strlen("!weather ");
+	char city[128], city_conv[128], *cp = rawp->text + strlen("!astro ");
 	memset(city, 0, 128);
 	memset(city_conv, 0, 128);
 	while (1) {
@@ -101,7 +89,7 @@ void *WeatherFunc(void *ptr) {
 		return NULL;
 	}
 	char str2[256];
-	sprintf(str2, "w %s", city_conv);
+	sprintf(str2, "a %s", city_conv);
 	fputs(str2, fp);
 	fclose(fp);
 	
@@ -135,13 +123,13 @@ void *WeatherFunc(void *ptr) {
 	return NULL;
 }
 
-void Weather(struct raw_line *rawp) {
+void Astro(struct raw_line *rawp) {
 	pthread_t thr;
 	pthread_attr_t attr;
 
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&thr, &attr, WeatherFunc, (void *)rawp);
+	pthread_create(&thr, &attr, AstroFunc, (void *)rawp);
 	pthread_detach(thr);
 	pthread_attr_destroy(&attr);
 }

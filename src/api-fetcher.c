@@ -50,8 +50,15 @@ static char *APIAstro(char *key, char *city) {
 	// Parse the json results
 	/////////////////////////
 	json_object *root = json_object_from_file("cmd.output");
+	if (root == NULL)
+		return NULL;
 	
 	json_object *location = json_object_object_get(root, "location");
+	if (location == NULL) {
+		char *errstr = malloc(128);
+		sprintf(errstr, "No matching location found.");
+		return errstr;
+	}
 	json_object *name = json_object_object_get(location, "name");
 	json_object *region = json_object_object_get(location, "region");
 	json_object *country = json_object_object_get(location, "country");
@@ -71,9 +78,11 @@ static char *APIAstro(char *key, char *city) {
 	memset(str, 0, 4096);
 	char *value = (char *)json_object_get_string(name);
 	sprintf(str, "%s, ", value);
-	value = (char *)json_object_get_string(region);
-	strcat(str, value);
-	strcat(str, ", ");
+	if (region != NULL) {
+		value = (char *)json_object_get_string(region);
+		strcat(str, value);
+		strcat(str, ", ");
+	}
 	value = (char *)json_object_get_string(country);
 	strcat(str, value);
 	strcat(str, ": Sunrise ");
@@ -132,8 +141,15 @@ static char *APIWeather(char *key, char *city) {
 	// Parse the json results
 	/////////////////////////
 	json_object *root = json_object_from_file("cmd.output");
+	if (root == NULL)
+		return NULL;
 	
 	json_object *location = json_object_object_get(root, "location");
+	if (location == NULL) {
+		char *errstr = malloc(128);
+		sprintf(errstr, "No matching location found.");
+		return errstr;
+	}
 	json_object *name = json_object_object_get(location, "name");
 	json_object *region = json_object_object_get(location, "region");
 	json_object *country = json_object_object_get(location, "country");

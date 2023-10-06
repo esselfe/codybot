@@ -173,9 +173,11 @@ static char *APIWeather(char *key, char *city) {
 	memset(str, 0, 4096);
 	char *value = (char *)json_object_get_string(name);
 	sprintf(str, "%s, ", value);
-	value = (char *)json_object_get_string(region);
-	strcat(str, value);
-	strcat(str, ", ");
+	if (region != NULL) {
+		value = (char *)json_object_get_string(region);
+		strcat(str, value);
+		strcat(str, ", ");
+	}
 	value = (char *)json_object_get_string(country);
 	strcat(str, value);
 	strcat(str, ": ");

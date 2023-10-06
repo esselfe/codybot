@@ -270,6 +270,10 @@ int main(int argc, char **argv) {
 		retstr = APIAstro(key, city);
 	else if (request_type == API_REQ_TYPE_WEATHER)
 		retstr = APIWeather(key, city);
+	
+	free(city);
+	free(key);
+	
 	if (retstr == NULL)
 		continue;
 	

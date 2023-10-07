@@ -27,7 +27,6 @@ static char *APIAstro(char *key, char *city) {
 	sprintf(url, "https://api.weatherapi.com/v1/astronomy.json"
 		"?key=%s&q=%s&dt=%s", key, city, datestr);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
-	free(key);
 	
 	FILE *fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
@@ -55,9 +54,19 @@ static char *APIAstro(char *key, char *city) {
 	
 	json_object *location = json_object_object_get(root, "location");
 	if (location == NULL) {
-		char *errstr = malloc(128);
-		sprintf(errstr, "No matching location found.");
-		return errstr;
+		json_object *error = json_object_object_get(root, "error");
+		if (error == NULL) {
+			json_object_put(root);
+			char *errstr = malloc(128);
+			sprintf(errstr, "No matching location found.");
+			return errstr;
+		}
+		else {
+			json_object *message = json_object_object_get(error, "message");
+			char *val = strdup(json_object_get_string(message));
+			json_object_put(root);
+			return val;
+		}
 	}
 	json_object *name = json_object_object_get(location, "name");
 	json_object *region = json_object_object_get(location, "region");
@@ -118,7 +127,6 @@ static char *APIWeather(char *key, char *city) {
 	sprintf(url, "https://api.weatherapi.com/v1/current.json"
 		"?key=%s&q=%s", key, city);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
-	free(key);
 	
 	FILE *fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
@@ -146,9 +154,19 @@ static char *APIWeather(char *key, char *city) {
 	
 	json_object *location = json_object_object_get(root, "location");
 	if (location == NULL) {
-		char *errstr = malloc(128);
-		sprintf(errstr, "No matching location found.");
-		return errstr;
+		json_object *error = json_object_object_get(root, "error");
+		if (error == NULL) {
+			json_object_put(root);
+			char *errstr = malloc(128);
+			sprintf(errstr, "No matching location found.");
+			return errstr;
+		}
+		else {
+			json_object *message = json_object_object_get(error, "message");
+			char *val = strdup(json_object_get_string(message));
+			json_object_put(root);
+			return val;
+		}
 	}
 	json_object *name = json_object_object_get(location, "name");
 	json_object *region = json_object_object_get(location, "region");
@@ -195,7 +213,7 @@ static char *APIWeather(char *key, char *city) {
 	strcat(str, "C/");
 	value = (char *)json_object_get_string(feels_f);
 	strcat(str, value);
-	strcat(str, "F, ");
+	strcat(str, "F, wind ");
 	value = (char *)json_object_get_string(wind_k);
 	strcat(str, value);
 	strcat(str, "kmh/");
@@ -228,7 +246,7 @@ int main(int argc, char **argv) {
 	if (fp == NULL) {
 		printf("api-fetcher error: Cannot open api.key: %s",
 			strerror(errno));
-		continue;
+		break;
 	}
 	char *key = malloc(1024);
 	memset(key, 0, 1024);	
@@ -245,6 +263,7 @@ int main(int argc, char **argv) {
 	if (fp == NULL) {
 		printf("api-fetcher error: Cannot open api-fetch: %s",
 			strerror(errno));
+		free(key);
 		continue;
 	}
 	char *city = malloc(1024);

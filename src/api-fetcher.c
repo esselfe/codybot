@@ -61,7 +61,7 @@ static char *APIAstro(char *key, char *city) {
 		if (error == NULL) {
 			json_object_put(root);
 			char *errstr = malloc(128);
-			sprintf(errstr, "No matching location found.");
+			sprintf(errstr, "No location found in response.");
 			return errstr;
 		}
 		else {
@@ -164,7 +164,7 @@ static char *APIWeather(char *key, char *city) {
 		if (error == NULL) {
 			json_object_put(root);
 			char *errstr = malloc(128);
-			sprintf(errstr, "No matching location found.");
+			sprintf(errstr, "No location found in response.");
 			return errstr;
 		}
 		else {

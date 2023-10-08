@@ -432,9 +432,9 @@ strcmp(raw.command, "NICK")!=0) {
 			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "weather ", 8) == 0) {
-			if (wttr_disabled) {
-				sprintf(buf, ",weather is currently disabled, try again later or "
-					"ask an admin to enable it");
+			if (weather_disabled) {
+				sprintf(buf, "%cweather is currently disabled, try again later or "
+					"ask an admin to enable it", trigger_char);
 				Msg(buf);
 			}
 			else
@@ -442,21 +442,23 @@ strcmp(raw.command, "NICK")!=0) {
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather_disable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
-				wttr_disabled = 1;
+				weather_disabled = 1;
 				Msg("weather_disabled = 1");
 			}
 			else {
-				sprintf(buf, "Only an admin can use ,weather_disable");
+				sprintf(buf, "Only an admin can use %cweather_disable",
+					trigger_char);
 				Msg(buf);
 			}
 		}
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather_enable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
-				wttr_disabled = 0;
+				weather_disabled = 0;
 				Msg("weather_disabled = 0");
 			}
 			else {
-				sprintf(buf, "Only an admin can use ,weather_enable");
+				sprintf(buf, "Only an admin can use %cweather_enable",
+					trigger_char);
 				Msg(buf);
 			}
 		}

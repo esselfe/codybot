@@ -31,13 +31,14 @@ static const struct option long_options[] = {
 static const char *short_options = "hVcdH:l:N:n:P:p:s:t:";
 
 void HelpShow(void) {
-	printf("Usage: codybot { -h/--help | -V/--version | -d/--debug }\n");
-	printf("			   { -H/--hostname HOST | -l/--log FILENAME | -N/--fullname NAME | -n/--nick NICK }\n");
-	printf("			   { -P/--localport PORTNUM | -p/--port PORTNUM | -s/--server ADDR | -t/--trigger CHAR }\n");
+printf("Usage: codybot { -h/--help | -V/--version | -c/--compiler {clang|gcc|tcc} | -d/--debug }\n");
+printf("    { -H/--hostname HOST | -l/--log FILENAME | -N/--fullname NAME | -n/--nick NICK }\n");
+printf("    { -P/--localport PORTNUM | -p/--port PORTNUM | -s/--server ADDR | -t/--trigger CHAR }\n");
 }
 
 int debug, socket_fd, ret, endmainloop, cc_disabled, sh_disabled,
-	sh_locked, wttr_disabled, cmd_timeout = 10, use_ssl, cc_compiler = CC_COMPILER_GCC;
+	sh_locked, weather_disabled, cmd_timeout = 10, use_ssl,
+	cc_compiler = CC_COMPILER_GCC;
 unsigned long long fortune_total;
 struct timeval tv0, tv_start;
 struct tm *tm0;
@@ -166,7 +167,8 @@ int main(int argc, char **argv) {
 			break;
 		case 'p': // --port
 			server_port = atoi(optarg);
-			if (server_port == 6697)
+			if (server_port == 6697 || server_port == 7000 ||
+			  server_port == 7070)
 				use_ssl = 1;
 			break;
 		case 's': // --server
@@ -176,7 +178,9 @@ int main(int argc, char **argv) {
 			trigger_char = *optarg;
 			break;
 		default:
-			fprintf(stderr, "##codybot::main() error: Unknown argument: %c/%d\n", (char)c, c);
+			fprintf(stderr, 
+				"##codybot::main() error: Unknown argument: %c/%d\n",
+				(char)c, c);
 			break;
 		}
 	}
@@ -247,9 +251,15 @@ int main(int argc, char **argv) {
 	raw.text = (char *)malloc(4096);
 
 	//struct stat st;
+	if(stat("cc_disabled", &st) == 0)
+		cc_disabled = 1;
+	if(stat("sh_disabled", &st) == 0)
+		sh_disabled = 1;
 	if(stat("sh_locked", &st) == 0)
 		sh_locked = 1;
-	
+	if(stat("weather_disabled", &st) == 0)
+		weather_disabled = 1;
+		
 	FILE *fp = fopen("stats", "r");
 	if (fp == NULL) {
 		fprintf(stderr, "##codybot::main() error: Cannot open stats file: %s\n",

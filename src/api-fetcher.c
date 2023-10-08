@@ -231,7 +231,7 @@ static char *APIWeather(char *key, char *city) {
 	strcat(str, "kmh/");
 	value = (char *)json_object_get_string(gust_m);
 	strcat(str, value);
-	strcat(str, "mph, ");
+	strcat(str, "mph, precip. ");
 	value = (char *)json_object_get_string(precip);
 	strcat(str, value);
 	strcat(str, "mm");

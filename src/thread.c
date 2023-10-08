@@ -37,6 +37,7 @@ void ThreadRXStart(void) {
 
 void *ThreadRXFunc(void *argp) {
 	char buffer_rx[4096], buf[4096];
+	struct stat st;
 	while (!endmainloop) {
 		memset(buffer_rx, 0, 4096);
 		SSL_read(pSSL, buffer_rx, 4095);
@@ -157,7 +158,7 @@ strcmp(raw.command, "NICK")!=0) {
 			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "astro ", 6) == 0) {
-			if (weather_disabled) {
+			if (weather_disabled || stat("weather_disabled", &st) == 0) {
 				sprintf(buf, "%castro is currently disabled, try again later or "
 					"ask an admin to enable it", trigger_char);
 				Msg(buf);
@@ -208,8 +209,7 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "cc ", 3) == 0) {
-			struct stat st2;
-			if (cc_disabled || stat("cc_disable", &st2) == 0) {
+			if (cc_disabled || stat("cc_disable", &st) == 0) {
 			if (strcmp(server_name, "irc.blinkenshell.org") == 0)
 				sprintf(buf, "%s: cc is permanently disabled", raw.nick);
 			else {
@@ -439,7 +439,7 @@ strcmp(raw.command, "NICK")!=0) {
 			Msg(buf);
 		}
 		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "weather ", 8) == 0) {
-			if (weather_disabled) {
+			if (weather_disabled || stat("weather_disabled", &st) == 0) {
 				sprintf(buf, "%cweather is currently disabled, try again later or "
 					"ask an admin to enable it", trigger_char);
 				Msg(buf);

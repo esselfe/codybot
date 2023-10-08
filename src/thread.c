@@ -106,10 +106,11 @@ void *ThreadRXFunc(void *argp) {
 		}
 
 if (raw.text != NULL && raw.nick != NULL && strcmp(raw.command, "JOIN") != 0 &&
-strcmp(raw.command, "NICK")!=0) {
+strcmp(raw.command, "NICK") != 0) {
 		SlapCheck(&raw);
+		if (raw.text[0]==trigger_char) {
 // help
-		if (raw.text[0]==trigger_char && strncmp(raw.text+1, "help", 4) == 0) {
+		if (strncmp(raw.text+1, "help", 4) == 0) {
 			char c = trigger_char;
 			sprintf(buf, "commands: %cabout %cadmins %cascii %castro %ccal %ccalc %ccc "
 				"%cchars %ccolorize %cdate %cdict %cfoldoc %chelp %cfortune %cjoke "
@@ -119,7 +120,7 @@ strcmp(raw.command, "NICK")!=0) {
 			continue;
 		}
 // admins
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "admins reload") == 0) {
+		else if (strcmp(raw.text+1, "admins reload") == 0) {
 			DestroyAdminList();
 			ParseAdminFile();
 			char *str = EnumerateAdmins();
@@ -127,21 +128,21 @@ strcmp(raw.command, "NICK")!=0) {
 			free(str);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "admins", 6) == 0) {
+		else if (strncmp(raw.text+1, "admins", 6) == 0) {
 			char *str = EnumerateAdmins();
 			sprintf(buf, "Admins: %s", str);
 			free(str);
 			Msg(buf);
 		}
 // ascii
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "ascii", 5) == 0) {
+		else if (strncmp(raw.text+1, "ascii", 5) == 0) {
 			if (strcmp(raw.channel, "#codybot")==0)
 				AsciiArt(&raw);
 			else
 				Msg("ascii: can only be run in #codybot (due to output > 4 lines)");
 		}
 // about
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "about", 5) == 0) {
+		else if (strncmp(raw.text+1, "about", 5) == 0) {
 			if (strcmp(nick, "codybot")==0)
 				Msg("codybot is an IRC bot written in C by esselfe, "
 					"sources @ https://github.com/esselfe/codybot");
@@ -152,12 +153,12 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 		}
 // astro
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "astro") == 0) {
+		else if (strcmp(raw.text+1, "astro") == 0) {
 			sprintf(buf, "astro: missing city argument, example: "
 				"'%castro montreal'", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "astro ", 6) == 0) {
+		else if (strncmp(raw.text+1, "astro ", 6) == 0) {
 			if (weather_disabled || stat("weather_disabled", &st) == 0) {
 				sprintf(buf, "%castro is currently disabled, try again later or "
 					"ask an admin to enable it", trigger_char);
@@ -167,34 +168,34 @@ strcmp(raw.command, "NICK")!=0) {
 				Astro(&raw);
 		}
 // cal
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cal") == 0)
+		else if (strcmp(raw.text+1, "cal") == 0)
 			Cal();
 // calc
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "calc") == 0)
+		else if (strcmp(raw.text+1, "calc") == 0)
 			Msg("calc  example: '^calc 10+20'");
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "calc ", 5) == 0)
+		else if (strncmp(raw.text+1, "calc ", 5) == 0)
 			Calc(&raw);
 // cc
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc") == 0) {
+		else if (strcmp(raw.text+1, "cc") == 0) {
 			sprintf(buf, "example: ,cc printf(\"this\\n\");");
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc clang") == 0) {
+		else if (strcmp(raw.text+1, "cc clang") == 0) {
 			cc_compiler = CC_COMPILER_CLANG;
 			Msg("Compiler is now clang");
 			continue;
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc gcc") == 0) {
+		else if (strcmp(raw.text+1, "cc gcc") == 0) {
 			cc_compiler = CC_COMPILER_GCC;
 			Msg("Compiler is now gcc");
 			continue;
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc tcc") == 0) {
+		else if (strcmp(raw.text+1, "cc tcc") == 0) {
 			cc_compiler = CC_COMPILER_TCC;
 			Msg("Compiler is now tcc");
 			continue;
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc_compiler") == 0) {
+		else if (strcmp(raw.text+1, "cc_compiler") == 0) {
 			if (cc_compiler == CC_COMPILER_CLANG) {
 				Msg("Compiler is clang");
 				continue;
@@ -208,7 +209,7 @@ strcmp(raw.command, "NICK")!=0) {
 				continue;
 			}
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "cc ", 3) == 0) {
+		else if (strncmp(raw.text+1, "cc ", 3) == 0) {
 			if (cc_disabled || stat("cc_disable", &st) == 0) {
 			if (strcmp(server_name, "irc.blinkenshell.org") == 0)
 				sprintf(buf, "%s: cc is permanently disabled", raw.nick);
@@ -222,7 +223,7 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 			CC(&raw);
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc_disable") == 0) {
+		else if (strcmp(raw.text+1, "cc_disable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				cc_disabled = 1;
 				Msg("cc_disabled = 1");
@@ -232,7 +233,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cc_enable") == 0) {
+		else if (strcmp(raw.text+1, "cc_enable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				cc_disabled = 0;
 				Msg("cc_disabled = 0");
@@ -243,21 +244,21 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 		}
 // chars
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "chars", 5) == 0)
+		else if (strncmp(raw.text+1, "chars", 5) == 0)
 			Chars(&raw);
 // colorize
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "colorlist") == 0) {
+		else if (strcmp(raw.text+1, "colorlist") == 0) {
 			Msg("\003011 \003022 \003044 \003055 \003066 \003077 \003088"
 				" \00309 \0031010 \0031111 \0031212 \0031313 \0031414 \0031515");
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "colorize") == 0) {
+		else if (strcmp(raw.text+1, "colorize") == 0) {
 			sprintf(buf, "Usage: %ccolorize some text to process", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "colorize ", 9) == 0)
+		else if (strncmp(raw.text+1, "colorize ", 9) == 0)
 			Colorize(&raw);
 // date
-		else if (raw.text[0]==trigger_char && strlen(raw.text) > 6 &&
+		else if (strlen(raw.text) > 6 &&
 			strncmp(raw.text+1, "date utc", 8) == 0) {
 			if (strncmp(raw.text+5, "utc-12", 6) == 0)
 				Date(-12);
@@ -308,27 +309,27 @@ strcmp(raw.command, "NICK")!=0) {
 			else if (strncmp(raw.text+6, "utc+12", 6) == 0)
 				Date(12);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "date", 4) == 0)
+		else if (strncmp(raw.text+1, "date", 4) == 0)
 			Date(0);
 // dict
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "dict") == 0) {
+		else if (strcmp(raw.text+1, "dict") == 0) {
 			sprintf(buf, "Missing argument, e.g. '%cdict wordhere'", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "dict ", 5) == 0)
+		else if (strncmp(raw.text+1, "dict ", 5) == 0)
 			Dict(&raw);
 // foldoc
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "foldoc") == 0) {
+		else if (strcmp(raw.text+1, "foldoc") == 0) {
 			sprintf(buf, "Missing term argument, e.g. '%cfoldoc linux'", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "foldoc ", 7) == 0)
+		else if (strncmp(raw.text+1, "foldoc ", 7) == 0)
 			Foldoc(&raw);
 // fortune
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "fortune", 7) == 0)
+		else if (strncmp(raw.text+1, "fortune", 7) == 0)
 			Fortune(&raw);
 // debug
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "debug on") == 0) {
+		else if (strcmp(raw.text+1, "debug on") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				debug = 1;
 				Msg("debug = 1");
@@ -336,7 +337,7 @@ strcmp(raw.command, "NICK")!=0) {
 			else
 				Msg("debug mode can only be changed by an admin");
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "debug off") == 0) {
+		else if (strcmp(raw.text+1, "debug off") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				debug = 0;
 				Msg("debug = 0");
@@ -345,41 +346,41 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg("debug mode can only be changed by an admin");
 		}
 // die
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "die", 4) == 0) {
+		else if (strncmp(raw.text+1, "die", 4) == 0) {
 			if (IsAdmin(raw.nick, raw.host))
 				exit(0);
 		}
 // joke
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "joke", 4) == 0)
+		else if (strncmp(raw.text+1, "joke", 4) == 0)
 			Joke(&raw);
 // msgbig
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "msgbig") == 0 &&
+		else if (strcmp(raw.text+1, "msgbig") == 0 &&
 			IsAdmin(raw.nick, raw.host)) {
 			memset(buf, 0, 4096);
 			memset(buf, '#', 1024);
 			Msg(buf);
 		}
 // rainbow
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "rainbow") == 0) {
+		else if (strcmp(raw.text+1, "rainbow") == 0) {
 			sprintf(buf, "Usage: %crainbow some random text", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "rainbow ", 8) == 0)
+		else if (strncmp(raw.text+1, "rainbow ", 8) == 0)
 			Rainbow(&raw);
 // rawmsg
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "rawmsg ", 7) == 0) {
+		else if (strncmp(raw.text+1, "rawmsg ", 7) == 0) {
 			printf("!!Sending raw message to server!!\n::%s::\n", raw.text+8);
 			RawMsg(&raw);
 		}
 // stats
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "stats") == 0)
+		else if (strcmp(raw.text+1, "stats") == 0)
 			Stats(&raw);
 // timeout
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "timeout") == 0) {
+		else if (strcmp(raw.text+1, "timeout") == 0) {
 			sprintf(buf, "timeout = %d", cmd_timeout);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "timeout ", 8) == 0) {
+		else if (strncmp(raw.text+1, "timeout ", 8) == 0) {
 			if (strcmp(raw.nick, "codybot")==0 || IsAdmin(raw.nick, raw.host)) {
 				raw.text[0] = ' ';
 				raw.text[1] = ' ';
@@ -402,7 +403,7 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 		}
 // trigger
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "trigger") == 0) {
+		else if (strcmp(raw.text+1, "trigger") == 0) {
 			sprintf(buf, "trigger = '%c'", trigger_char);
 			Msg(buf);
 		}
@@ -415,7 +416,7 @@ strcmp(raw.command, "NICK")!=0) {
 			Msg(buf);
 		}
 // uptime
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "uptime") == 0) {
+		else if (strcmp(raw.text+1, "uptime") == 0) {
 			gettimeofday(&tv0, NULL);
 			t0 = (time_t)tv0.tv_sec - tv_start.tv_sec;
 			tm0 = gmtime(&t0);
@@ -428,17 +429,17 @@ strcmp(raw.command, "NICK")!=0) {
 			Msg(buf);
 		}
 // version
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "version") == 0) {
+		else if (strcmp(raw.text+1, "version") == 0) {
 			sprintf(buf, "codybot %s", codybot_version_string);
 			Msg(buf);
 		}
 // weather
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather") == 0) {
+		else if (strcmp(raw.text+1, "weather") == 0) {
 			sprintf(buf, "weather: missing city argument, example: "
 				"'%cweather montreal'", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "weather ", 8) == 0) {
+		else if (strncmp(raw.text+1, "weather ", 8) == 0) {
 			if (weather_disabled || stat("weather_disabled", &st) == 0) {
 				sprintf(buf, "%cweather is currently disabled, try again later or "
 					"ask an admin to enable it", trigger_char);
@@ -447,7 +448,7 @@ strcmp(raw.command, "NICK")!=0) {
 			else
 				Weather(&raw);
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather_disable") == 0) {
+		else if (strcmp(raw.text+1, "weather_disable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				weather_disabled = 1;
 				Msg("weather_disabled = 1");
@@ -458,7 +459,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "weather_enable") == 0) {
+		else if (strcmp(raw.text+1, "weather_enable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				weather_disabled = 0;
 				Msg("weather_disabled = 0");
@@ -470,12 +471,12 @@ strcmp(raw.command, "NICK")!=0) {
 			}
 		}
 // sh
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh") == 0) {
+		else if (strcmp(raw.text+1, "sh") == 0) {
 			sprintf(buf, "sh: missing argument, example: '%csh ls -ld /tmp'",
 				trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_lock") == 0) {
+		else if (strcmp(raw.text+1, "sh_lock") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				sh_locked = 1;
 				Msg("sh_locked = 1");
@@ -485,7 +486,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_enable") == 0) {
+		else if (strcmp(raw.text+1, "sh_enable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				sh_disabled = 0;
 				Msg("sh_disabled = 0");
@@ -495,7 +496,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_disable") == 0) {
+		else if (strcmp(raw.text+1, "sh_disable") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				sh_disabled = 1;
 				Msg("sh_disabled = 1");
@@ -505,7 +506,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "sh_unlock") == 0) {
+		else if (strcmp(raw.text+1, "sh_unlock") == 0) {
 			if (IsAdmin(raw.nick, raw.host)) {
 				sh_locked = 0;
 				Msg("sh_locked = 0");
@@ -515,7 +516,7 @@ strcmp(raw.command, "NICK")!=0) {
 				Msg(buf);
 			}
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "sh ", 3) == 0) {
+		else if (strncmp(raw.text+1, "sh ", 3) == 0) {
 			struct stat st;
 			if (sh_disabled || stat("sh_disable", &st) == 0) {
 				if (strcmp(server_name, "irc.blinkenshell.org") == 0)
@@ -652,8 +653,8 @@ if (strncmp(c, "cat ", 4)==0) {
 			++cnt;
 		}
 	}
-}
-}
+} // if (strncmp(c, "cat ", 4)==0)
+} // if (!dontrun)
 
 			if (dontrun) {
 				Msg("Will not run this!");
@@ -669,11 +670,13 @@ if (strncmp(c, "cat ", 4)==0) {
 				printf("codybot::ThreadRXFunc() starting thread for ::%s::\n",
 					raw.text);
 			ShRunStart(raw.text);
-		}
+		} // else if (strncmp(raw.text+1, "sh ", 3) == 0)
+		} // if (raw.text[0] == trigger_char)
 
 		usleep(10000);
-}
-	}
+} // if (raw.text != NULL && raw.nick != NULL && strcmp(raw.command, "JOIN") != 0 &&
+  // strcmp(raw.command, "NICK")!=0)
+	} // while (!endmainloop)
 	return NULL;
-}
+} // void *ThreadRXFunc(void *argp)
 

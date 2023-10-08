@@ -118,6 +118,7 @@ int main(int argc, char **argv) {
 	signal(SIGINT, SignalFunc);
 
 	int c;
+	struct stat st;
 	while (1) {
 		c = getopt_long(argc, argv, short_options, long_options, NULL);
 		if (c == -1)
@@ -191,8 +192,14 @@ int main(int argc, char **argv) {
 	memset(buffer, 0, 4096);
 
 	if (!log_filename) {
-		log_filename = (char *)malloc(strlen("codybot.log")+1);
-		sprintf(log_filename, "codybot.log");
+		if (stat("log.fifo", &st) == 0) {
+			log_filename = (char *)malloc(strlen("log.fifo")+1);
+			sprintf(log_filename, "log.fifo");
+		}
+		else {
+			log_filename = (char *)malloc(strlen("codybot.log")+1);
+			sprintf(log_filename, "codybot.log");
+		}
 	}
 
 	CheckLoginuid();
@@ -239,7 +246,7 @@ int main(int argc, char **argv) {
 	raw.channel = (char *)malloc(1024);
 	raw.text = (char *)malloc(4096);
 
-	struct stat st;
+	//struct stat st;
 	if(stat("sh_locked", &st) == 0)
 		sh_locked = 1;
 	

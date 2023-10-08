@@ -118,6 +118,7 @@ void ConsoleReadInput(void) {
 			if (cmd_timeout == 0)
 				cmd_timeout = 10;
 			sprintf(buffer, "timeout = %d", cmd_timeout);
+			target = current_channel;
 			Msg(buffer);
 		}
 		else if (strcmp(buffer_line, "trigger\n") == 0) {
@@ -129,6 +130,7 @@ void ConsoleReadInput(void) {
 			if (*(cp+8)!='\n')
 				trigger_char = *(cp+8);
 			sprintf(buffer, "trigger = %c", trigger_char);
+			target = current_channel;
 			Msg(buffer);
 		}
 		// Otherwise send the input line directly to the server.

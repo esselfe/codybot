@@ -25,15 +25,17 @@ static const struct option long_options[] = {
 	{"localport", required_argument, NULL, 'P'},
 	{"port", required_argument, NULL, 'p'},
 	{"server", required_argument, NULL, 's'},
+	{"ssl", no_argument, NULL, 'S'},
 	{"trigger", required_argument, NULL, 't'},
 	{NULL, 0, NULL, 0}
 };
-static const char *short_options = "hVcdH:l:N:n:P:p:s:t:";
+static const char *short_options = "hVcdH:l:N:n:P:p:Ss:t:";
 
 void HelpShow(void) {
 printf("Usage: codybot { -h/--help | -V/--version | -c/--compiler {clang|gcc|tcc} | -d/--debug }\n");
 printf("    { -H/--hostname HOST | -l/--log FILENAME | -N/--fullname NAME | -n/--nick NICK }\n");
-printf("    { -P/--localport PORTNUM | -p/--port PORTNUM | -s/--server ADDR | -t/--trigger CHAR }\n");
+printf("    { -P/--localport PORTNUM | -p/--port PORTNUM | -s/--server ADDR | -S/--ssl }\n");
+printf("    { -t/--trigger CHAR }\n");
 }
 
 int debug, socket_fd, ret, endmainloop, cc_disabled, sh_disabled,
@@ -170,6 +172,9 @@ int main(int argc, char **argv) {
 			if (server_port == 6697 || server_port == 7000 ||
 			  server_port == 7070)
 				use_ssl = 1;
+			break;
+		case 'S': // --ssl
+			use_ssl = 1;
 			break;
 		case 's': // --server
 			ServerGetIP(optarg);

@@ -130,7 +130,9 @@ int main(int argc, char **argv) {
 			printf("codybot %s\n", codybot_version_string);
 			exit(0);
 		case 'c': // --compiler
-			if (strcmp(optarg, "gcc") == 0)
+			if (strcmp(optarg, "clang") == 0)
+				cc_compiler = CC_COMPILER_CLANG;
+			else if (strcmp(optarg, "gcc") == 0)
 				cc_compiler = CC_COMPILER_GCC;
 			else if (strcmp(optarg, "tcc") == 0)
 				cc_compiler = CC_COMPILER_TCC;

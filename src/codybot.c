@@ -264,7 +264,7 @@ int main(int argc, char **argv) {
 		sh_locked = 1;
 	if(stat("weather_disabled", &st) == 0)
 		weather_disabled = 1;
-		
+	
 	FILE *fp = fopen("stats", "r");
 	if (fp == NULL) {
 		fprintf(stderr, "##codybot::main() error: Cannot open stats file: %s\n",

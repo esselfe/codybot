@@ -29,7 +29,7 @@ void *ShRunFunc(void *argp) {
 	
 	FILE *fp = fopen("prog.sh", "w+");
 	if (fp == NULL) {
-		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
+		sprintf(buf, "codybot::ShRunFunc() error: Cannot open prog.sh: %s",
 			strerror(errno));
 		Msg(buf);
 	}

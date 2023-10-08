@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
 			else if (strcmp(optarg, "tcc") == 0)
 				cc_compiler = CC_COMPILER_TCC;
 			else {
-				printf("codybot error: the compiler must be gcc or tcc\n");
+				printf("codybot error: the compiler must be clang, gcc or tcc\n");
 				exit(1);
 			}
 			break;

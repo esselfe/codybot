@@ -49,8 +49,11 @@ static char *APIAstro(char *key, char *city) {
 	// Parse the json results
 	/////////////////////////
 	json_object *root = json_object_from_file("cmd.output");
-	if (root == NULL)
-		return NULL;
+	if (root == NULL) {
+		char *str = malloc(32);
+		sprintf(str, "No results.");
+		return str;
+	}
 	
 	json_object *location = json_object_object_get(root, "location");
 	if (location == NULL) {
@@ -149,8 +152,11 @@ static char *APIWeather(char *key, char *city) {
 	// Parse the json results
 	/////////////////////////
 	json_object *root = json_object_from_file("cmd.output");
-	if (root == NULL)
-		return NULL;
+	if (root == NULL) {
+		char *str = malloc(32);
+		sprintf(str, "No results.");
+		return str;
+	}
 	
 	json_object *location = json_object_object_get(root, "location");
 	if (location == NULL) {

@@ -36,7 +36,7 @@ void *ShRunFunc(void *argp) {
 	fputs(text, fp);
 	fclose(fp);
 	
-	sprintf(cmd, "timeout %ds bash prog.sh &> cmd.output; echo $? >cmd.ret",
+	sprintf(cmd, "bash -c 'timeout %ds bash prog.sh &> cmd.output; echo $? >cmd.ret'",
 		cmd_timeout);
 	Log(LOCAL, cmd);
 	system(cmd);
@@ -129,7 +129,7 @@ void *ShRunFunc(void *argp) {
 		}
 	}
 	else if (lines_total >= lines_max+1) {
-		system("cat cmd.output |nc termbin.com 9999 > cmd.url");
+		system("bash -c 'cat cmd.output | nc termbin.com 9999 > cmd.url'");
 		FILE *fp2 = fopen("cmd.url", "r");
 		if (fp2 == NULL)
 			fprintf(stderr, "##codybot::ShRunFunc() error: Cannot open cmd.url: %s\n",

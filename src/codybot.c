@@ -255,7 +255,6 @@ int main(int argc, char **argv) {
 	raw.channel = (char *)malloc(1024);
 	raw.text = (char *)malloc(4096);
 
-	//struct stat st;
 	if(stat("cc_disabled", &st) == 0)
 		cc_disabled = 1;
 	if(stat("sh_disabled", &st) == 0)

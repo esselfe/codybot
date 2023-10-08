@@ -71,7 +71,7 @@ void CC(struct raw_line *rawp) {
 		ret = system("clang -o prog prog.c 2>cmd.output");
 
 	if (ret == 0) {
-		sprintf(buffer, "timeout %ds ./prog &> cmd.output; echo $? > cmd.ret",
+		sprintf(buffer, "bash -c 'timeout %ds ./prog &> cmd.output; echo $? > cmd.ret'",
 			cmd_timeout);
 		system(buffer);
 	}
@@ -123,7 +123,7 @@ void CC(struct raw_line *rawp) {
 		Msg(line);
 		++cnt;
 		if (cnt >= 10) {
-			system("cat cmd.output | nc termbin.com 9999 > cmd.url");
+			system("bash -c 'cat cmd.output | nc termbin.com 9999 > cmd.url'");
 			FILE *fu = fopen("cmd.url", "r");
 			if (fu == NULL) {
 				sprintf(buffer, "##codybot::Calc() error: Cannot open cmd.url: %s",

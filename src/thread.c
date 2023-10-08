@@ -156,8 +156,15 @@ strcmp(raw.command, "NICK")!=0) {
 				"'%castro montreal'", trigger_char);
 			Msg(buf);
 		}
-		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "astro ", 6) == 0)
-			Astro(&raw);
+		else if (raw.text[0]==trigger_char && strncmp(raw.text+1, "astro ", 6) == 0) {
+			if (weather_disabled) {
+				sprintf(buf, "%castro is currently disabled, try again later or "
+					"ask an admin to enable it", trigger_char);
+				Msg(buf);
+			}
+			else
+				Astro(&raw);
+		}
 // cal
 		else if (raw.text[0]==trigger_char && strcmp(raw.text+1, "cal") == 0)
 			Cal();

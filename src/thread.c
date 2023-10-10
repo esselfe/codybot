@@ -121,12 +121,14 @@ strcmp(raw.command, "NICK") != 0) {
 		}
 // admins
 		else if (strcmp(raw.text+1, "admins reload") == 0) {
-			DestroyAdminList();
-			ParseAdminFile();
-			char *str = EnumerateAdmins();
-			sprintf(buf, "Admins: %s", str);
-			free(str);
-			Msg(buf);
+			if (IsAdmin(raw.nick, raw.host)) {
+				DestroyAdminList();
+				ParseAdminFile();
+				char *str = EnumerateAdmins();
+				sprintf(buf, "Admins: %s", str);
+				free(str);
+				Msg(buf);
+			}
 		}
 		else if (strncmp(raw.text+1, "admins", 6) == 0) {
 			char *str = EnumerateAdmins();
@@ -172,12 +174,13 @@ strcmp(raw.command, "NICK") != 0) {
 			Cal();
 // calc
 		else if (strcmp(raw.text+1, "calc") == 0)
-			Msg("calc  example: '^calc 10+20'");
+			Msg("calc  example: '!calc 10+20'");
 		else if (strncmp(raw.text+1, "calc ", 5) == 0)
 			Calc(&raw);
 // cc
 		else if (strcmp(raw.text+1, "cc") == 0) {
-			sprintf(buf, "example: ,cc printf(\"this\\n\");");
+			sprintf(buf, "example: %ccc printf(\"this\\n\");",
+				trigger_char);
 			Msg(buf);
 		}
 		else if (strcmp(raw.text+1, "cc clang") == 0) {
@@ -533,7 +536,7 @@ strcmp(raw.command, "NICK") != 0) {
 				raw.text[0] = ' ';
 				raw.text[1] = ' ';
 				raw.text[2] = ' ';
-				sprintf(buffer_cmd, "echo '%s' > chroot/home/dummy/run.fifo", raw.text);
+				sprintf(buffer_cmd, "bash -c \"echo '%s' > chroot/home/dummy/run.fifo\"", raw.text);
 				system(buffer_cmd);
 
 				// Wait for chroot/home/dummy/run.sh to write in cmd.output
@@ -570,7 +573,7 @@ strcmp(raw.command, "NICK") != 0) {
 				Msg(output);
 
 				if (line_total >= 2) {
-					system("cat chroot/home/dummy/cmd.output |nc termbin.com 9999 >cmd.url");
+					system("bash -c 'cat chroot/home/dummy/cmd.output | nc termbin.com 9999 >cmd.url'");
 					fr = fopen("cmd.url", "r");
 					if (fr == NULL) {
 						sprintf(buf, "codybot::ThreadRXFunc() error: Cannot open cmd.url: %s", strerror(errno));

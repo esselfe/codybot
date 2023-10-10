@@ -30,7 +30,7 @@ static char *APIAstro(char *key, char *city) {
 	
 	FILE *fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open cmd.output: %s",
+		printf("api-fetcher error: Cannot open cmd.output: %s\n",
 			strerror(errno));
 		curl_easy_cleanup(handle);
 		return NULL;
@@ -133,7 +133,7 @@ static char *APIWeather(char *key, char *city) {
 	
 	FILE *fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open cmd.output: %s",
+		printf("api-fetcher error: Cannot open cmd.output: %s\n",
 			strerror(errno));
 		curl_easy_cleanup(handle);
 		return NULL;
@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
 	///////////////////
 	FILE *fp = fopen("api.key", "r");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open api.key: %s",
+		printf("api-fetcher error: Cannot open api.key: %s\n",
 			strerror(errno));
 		break;
 	}
@@ -267,7 +267,7 @@ int main(int argc, char **argv) {
 	///////////////////
 	fp = fopen("api-fetch", "r");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open api-fetch: %s",
+		printf("api-fetcher error: Cannot open api-fetch: %s\n",
 			strerror(errno));
 		free(key);
 		continue;
@@ -306,7 +306,7 @@ int main(int argc, char **argv) {
 	////////////////////////////
 	fp = fopen("cmd.output", "w");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open cmd.output: %s",
+		printf("api-fetcher error: Cannot open cmd.output: %s\n",
 			strerror(errno));
 		continue;
 	}
@@ -318,7 +318,7 @@ int main(int argc, char **argv) {
 	///////////////////
 	fp = fopen("api-fetch", "w");
 	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open api-fetch: %s",
+		printf("api-fetcher error: Cannot open api-fetch: %s\n",
 			strerror(errno));
 		continue;
 	}

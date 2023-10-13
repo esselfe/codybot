@@ -179,7 +179,7 @@ static char *APIForecast(char *city) {
 	char url[4096];
 	memset(url, 0, 4096);
 	sprintf(url, "https://api.weatherapi.com/v1/forecast.json"
-		"?key=%s&q=%s&days=2&aqi=no&alerts=no", key, city);
+		"?key=%s&q=%s&days=3&aqi=no&alerts=no", key, city);
 	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
@@ -234,7 +234,7 @@ static char *APIForecast(char *city) {
 	json_object *forecast = json_object_object_get(root, "forecast");
 	json_object *forecastday = json_object_object_get(forecast, "forecastday");
 	
-	json_object *item1 = json_object_array_get_idx(forecastday, 0);
+	json_object *item1 = json_object_array_get_idx(forecastday, 1);
 	json_object *date1 = json_object_object_get(item1, "date");
 	json_object *day1 = json_object_object_get(item1, "day");
 	json_object *condition1 = json_object_object_get(day1, "condition");
@@ -247,7 +247,7 @@ static char *APIForecast(char *city) {
         json_object *totalprecip_in1 = json_object_object_get(day1, "totalprecip_in");
         json_object *totalsnow_cm1 = json_object_object_get(day1, "totalsnow_cm");
 	
-	json_object *item2 = json_object_array_get_idx(forecastday, 1);
+	json_object *item2 = json_object_array_get_idx(forecastday, 2);
 	json_object *date2 = json_object_object_get(item2, "date");
 	json_object *day2 = json_object_object_get(item2, "day");
 	json_object *condition2 = json_object_object_get(day2, "condition");

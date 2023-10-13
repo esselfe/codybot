@@ -12,7 +12,34 @@
 #define API_REQ_TYPE_ASTRO   1
 #define API_REQ_TYPE_WEATHER 2
 
-static char *APIAstro(char *key, char *city) {
+static char *APIGetKey(void) {
+	FILE *fp = fopen("api.key", "r");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open api.key: %s\n",
+			strerror(errno));
+		return NULL;
+	}
+	char *key = malloc(1024);
+	memset(key, 0, 1024);	
+	fgets(key, 1023, fp);
+	fclose(fp);
+	
+	// Remove the newline at the end of the key string
+	if (*(key+strlen(key)-1) == '\n')
+		*(key+strlen(key)-1) = '\0';
+	
+	return key;
+}
+
+static char *APIAstro(char *city) {
+	// Retrieve API key
+	///////////////////
+	char *key = APIGetKey();
+	if (key == NULL)
+		return NULL;
+	
+	// Perform curl request
+	///////////////////////
 	CURL *handle = curl_easy_init();
 	
 	char datestr[64];
@@ -26,6 +53,7 @@ static char *APIAstro(char *key, char *city) {
 	memset(url, 0, 4096);
 	sprintf(url, "https://api.weatherapi.com/v1/astronomy.json"
 		"?key=%s&q=%s&dt=%s", key, city, datestr);
+	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
 	FILE *fp = fopen("cmd.output", "w");
@@ -122,13 +150,22 @@ static char *APIAstro(char *key, char *city) {
 	return str;
 }
 
-static char *APIWeather(char *key, char *city) {
+static char *APIWeather(char *city) {
+	// Retrieve API key
+	///////////////////
+	char *key = APIGetKey();
+	if (key == NULL)
+		return NULL;
+	
+	// Perform curl request
+	///////////////////////
 	CURL *handle = curl_easy_init();
 	
 	char url[4096];
 	memset(url, 0, 4096);
 	sprintf(url, "https://api.weatherapi.com/v1/current.json"
 		"?key=%s&q=%s", key, city);
+	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
 	FILE *fp = fopen("cmd.output", "w");
@@ -144,6 +181,7 @@ static char *APIWeather(char *key, char *city) {
 	if (ret != CURLE_OK) {
 		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
 		curl_easy_cleanup(handle);
+		fclose(fp);
 		return NULL;
 	}
 	fclose(fp);
@@ -246,30 +284,12 @@ int main(int argc, char **argv) {
 
   unsigned int request_type = API_REQ_TYPE_UNSET;	
   while(1) {
-	// Retrieve API key
-	///////////////////
-	FILE *fp = fopen("api.key", "r");
-	if (fp == NULL) {
-		printf("api-fetcher error: Cannot open api.key: %s\n",
-			strerror(errno));
-		break;
-	}
-	char *key = malloc(1024);
-	memset(key, 0, 1024);	
-	fgets(key, 1023, fp);
-	fclose(fp);
-	
-	// Remove the newline at the end of the key string
-	if (*(key+strlen(key)-1) == '\n')
-		*(key+strlen(key)-1) = '\0';
-	
 	// Retrieve city from fifo
 	///////////////////
-	fp = fopen("api-fetch", "r");
+	FILE *fp = fopen("api-fetch", "r");
 	if (fp == NULL) {
 		printf("api-fetcher error: Cannot open api-fetch: %s\n",
 			strerror(errno));
-		free(key);
 		continue;
 	}
 	char *city = malloc(1024);
@@ -292,12 +312,11 @@ int main(int argc, char **argv) {
 	///////////////////////
 	char *retstr = NULL;
 	if (request_type == API_REQ_TYPE_ASTRO)
-		retstr = APIAstro(key, city);
+		retstr = APIAstro(city);
 	else if (request_type == API_REQ_TYPE_WEATHER)
-		retstr = APIWeather(key, city);
+		retstr = APIWeather(city);
 	
 	free(city);
-	free(key);
 	
 	if (retstr == NULL)
 		continue;
@@ -308,6 +327,7 @@ int main(int argc, char **argv) {
 	if (fp == NULL) {
 		printf("api-fetcher error: Cannot open cmd.output: %s\n",
 			strerror(errno));
+		free(retstr);
 		continue;
 	}
 	fputs(retstr, fp);

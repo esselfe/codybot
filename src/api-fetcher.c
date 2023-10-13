@@ -8,9 +8,10 @@
 
 #include "codybot.h"
 
-#define API_REQ_TYPE_UNSET   0
-#define API_REQ_TYPE_ASTRO   1
-#define API_REQ_TYPE_WEATHER 2
+#define API_REQ_TYPE_UNSET    0
+#define API_REQ_TYPE_ASTRO    1
+#define API_REQ_TYPE_FORECAST 2
+#define API_REQ_TYPE_WEATHER  3
 
 static char *APIGetKey(void) {
 	FILE *fp = fopen("api.key", "r");
@@ -116,34 +117,244 @@ static char *APIAstro(char *city) {
 	/////////////////////////////
 	char *str = malloc(4096);
 	memset(str, 0, 4096);
-	char *value = (char *)json_object_get_string(name);
-	sprintf(str, "%s, ", value);
+	
+	if (name != NULL)
+		sprintf(str, "%s, ", (char *)json_object_get_string(name));
+	
 	if (region != NULL) {
-		value = (char *)json_object_get_string(region);
-		strcat(str, value);
+		strcat(str, (char *)json_object_get_string(region));
 		strcat(str, ", ");
 	}
-	value = (char *)json_object_get_string(country);
-	strcat(str, value);
-	strcat(str, ": Sunrise ");
-	value = (char *)json_object_get_string(sunrise);
-	strcat(str, value);
-	strcat(str, ", sunset ");
-	value = (char *)json_object_get_string(sunset);
-	strcat(str, value);
-	strcat(str, ", moonrise ");
-	value = (char *)json_object_get_string(moonrise);
-	strcat(str, value);
-	strcat(str, ", moonset ");
-	value = (char *)json_object_get_string(moonset);
-	strcat(str, value);
-	strcat(str, ", phase ");
-	value = (char *)json_object_get_string(moonphase);
-	strcat(str, value);
-	strcat(str, ", illumination ");
-	value = (char *)json_object_get_string(moonillum);
-	strcat(str, value);
-	strcat(str, "%");
+	if (country != NULL) {
+		strcat(str, (char *)json_object_get_string(country));
+		strcat(str, ": ");
+	}
+	if (sunrise != NULL) {
+		strcat(str, "Sunrise ");
+		strcat(str, (char *)json_object_get_string(sunrise));
+		strcat(str, ", ");
+	}
+	if (sunset != NULL) {
+		strcat(str, "sunset ");
+		strcat(str, (char *)json_object_get_string(sunset));
+		strcat(str, ", ");
+	}
+	if (moonrise != NULL) {
+		strcat(str, "moonrise ");
+		strcat(str, (char *)json_object_get_string(moonrise));
+		strcat(str, ", ");
+	}
+	if (moonset != NULL) {
+		strcat(str, "moonset ");
+		strcat(str, (char *)json_object_get_string(moonset));
+		strcat(str, ", ");
+	}
+	if (moonphase != NULL) {
+		strcat(str, "phase ");
+		strcat(str, (char *)json_object_get_string(moonphase));
+		strcat(str, ", ");
+	}
+	if (moonillum != NULL) {
+		strcat(str, "illumination ");
+		strcat(str, (char *)json_object_get_string(moonillum));
+		strcat(str, "%");
+	}
+	
+	json_object_put(root);
+	
+	return str;
+}
+
+static char *APIForecast(char *city) {
+	// Retrieve API key
+	///////////////////
+	char *key = APIGetKey();
+	if (key == NULL)
+		return NULL;
+	
+	// Perform curl request
+	///////////////////////
+	CURL *handle = curl_easy_init();
+	
+	char url[4096];
+	memset(url, 0, 4096);
+	sprintf(url, "https://api.weatherapi.com/v1/forecast.json"
+		"?key=%s&q=%s&days=2&aqi=no&alerts=no", key, city);
+	free(key);
+	curl_easy_setopt(handle, CURLOPT_URL, url);
+	
+	FILE *fp = fopen("cmd.output", "w");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open cmd.output: %s\n",
+			strerror(errno));
+		curl_easy_cleanup(handle);
+		return NULL;
+	}
+	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
+	
+	CURLcode ret = curl_easy_perform(handle);
+	if (ret != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+		curl_easy_cleanup(handle);
+		fclose(fp);
+		return NULL;
+	}
+	fclose(fp);
+	curl_easy_cleanup(handle);
+
+	// Parse the json results
+	/////////////////////////
+	json_object *root = json_object_from_file("cmd.output");
+	if (root == NULL) {
+		char *str = malloc(32);
+		sprintf(str, "No results.");
+		return str;
+	}
+	
+	json_object *location = json_object_object_get(root, "location");
+	if (location == NULL) {
+		json_object *error = json_object_object_get(root, "error");
+		if (error == NULL) {
+			json_object_put(root);
+			char *errstr = malloc(128);
+			sprintf(errstr, "No location found in response.");
+			return errstr;
+		}
+		else {
+			json_object *message = json_object_object_get(error, "message");
+			char *val = strdup(json_object_get_string(message));
+			json_object_put(root);
+			return val;
+		}
+	}
+	json_object *name = json_object_object_get(location, "name");
+	json_object *region = json_object_object_get(location, "region");
+	json_object *country = json_object_object_get(location, "country");
+	
+	json_object *forecast = json_object_object_get(root, "forecast");
+	json_object *forecastday = json_object_object_get(forecast, "forecastday");
+	
+	json_object *item1 = json_object_array_get_idx(forecastday, 0);
+	json_object *date1 = json_object_object_get(item1, "date");
+	json_object *day1 = json_object_object_get(item1, "day");
+	json_object *condition1 = json_object_object_get(day1, "condition");
+	json_object *text1 = json_object_object_get(condition1, "text");
+	json_object *mintemp_c1 = json_object_object_get(day1, "mintemp_c");
+	json_object *mintemp_f1 = json_object_object_get(day1, "mintemp_f");
+	json_object *maxtemp_c1 = json_object_object_get(day1, "maxtemp_c");
+	json_object *maxtemp_f1 = json_object_object_get(day1, "maxtemp_f");
+	json_object *totalprecip_mm1 = json_object_object_get(day1, "totalprecip_mm");
+        json_object *totalprecip_in1 = json_object_object_get(day1, "totalprecip_in");
+        json_object *totalsnow_cm1 = json_object_object_get(day1, "totalsnow_cm");
+	
+	json_object *item2 = json_object_array_get_idx(forecastday, 1);
+	json_object *date2 = json_object_object_get(item2, "date");
+	json_object *day2 = json_object_object_get(item2, "day");
+	json_object *condition2 = json_object_object_get(day2, "condition");
+	json_object *text2 = json_object_object_get(condition2, "text");
+	json_object *mintemp_c2 = json_object_object_get(day2, "mintemp_c");
+	json_object *mintemp_f2 = json_object_object_get(day2, "mintemp_f");
+	json_object *maxtemp_c2 = json_object_object_get(day2, "maxtemp_c");
+	json_object *maxtemp_f2 = json_object_object_get(day2, "maxtemp_f");
+	json_object *totalprecip_mm2 = json_object_object_get(day2, "totalprecip_mm");
+        json_object *totalprecip_in2 = json_object_object_get(day2, "totalprecip_in");
+        json_object *totalsnow_cm2 = json_object_object_get(day2, "totalsnow_cm");
+        
+	// Create final output string
+	/////////////////////////////
+	char *str = malloc(4096);
+	memset(str, 0, 4096);
+	if (name != NULL)
+		sprintf(str, "%s, ", (char *)json_object_get_string(name));
+	if (region != NULL) {
+		strcat(str, (char *)json_object_get_string(region));
+		strcat(str, ", ");
+	}
+	if (country != NULL) {
+		strcat(str, (char *)json_object_get_string(country));
+		strcat(str, ": ");
+	}
+	if (date1 != NULL) {
+		strcat(str, (char *)json_object_get_string(date1));
+		strcat(str, ": ");
+	}
+	if (text1 != NULL) {
+		strcat(str, (char *)json_object_get_string(text1));
+		strcat(str, ", ");
+	}
+	if (mintemp_c1 != NULL) {
+		strcat(str, "minimum ");
+		strcat(str, (char *)json_object_get_string(mintemp_c1));
+		strcat(str, "C/");
+	}
+	if (mintemp_f1 != NULL) {
+		strcat(str, (char *)json_object_get_string(mintemp_f1));
+		strcat(str, "F, ");
+	}
+	if (maxtemp_c1 != NULL) {
+		strcat(str, "maximum ");
+		strcat(str, (char *)json_object_get_string(maxtemp_c1));
+		strcat(str, "C/");
+	}
+	if (maxtemp_f1 != NULL) {
+		strcat(str, (char *)json_object_get_string(maxtemp_f1));
+		strcat(str, "F ");
+	}
+	if (totalprecip_mm1 != NULL) {
+		strcat(str, "total precip. ");
+		strcat(str, (char *)json_object_get_string(totalprecip_mm1));
+		strcat(str, "mm/");
+	}
+	if (totalprecip_in1 != NULL) {
+		strcat(str, (char *)json_object_get_string(totalprecip_in1));
+		strcat(str, "in, ");
+	}
+	if (totalsnow_cm1 != NULL) {
+		strcat(str, "total snow ");
+		strcat(str, (char *)json_object_get_string(totalsnow_cm1));
+		strcat(str, "cm; ");
+	}
+	
+	if (date2 != NULL) {
+		strcat(str, (char *)json_object_get_string(date2));
+		strcat(str, ": ");
+	}
+	if (text2 != NULL) {
+		strcat(str, (char *)json_object_get_string(text2));
+		strcat(str, ", ");
+	}
+	if (mintemp_c2 != NULL) {
+		strcat(str, "minimum ");
+		strcat(str, (char *)json_object_get_string(mintemp_c2));
+		strcat(str, "C/");
+	}
+	if (mintemp_f2 != NULL) {
+		strcat(str, (char *)json_object_get_string(mintemp_f2));
+		strcat(str, "F, ");
+	}
+	if (maxtemp_c2 != NULL) {
+		strcat(str, "maximum ");
+		strcat(str, (char *)json_object_get_string(maxtemp_c2));
+		strcat(str, "C/");
+	}
+	if (maxtemp_f2 != NULL) {
+		strcat(str, (char *)json_object_get_string(maxtemp_f2));
+		strcat(str, "F ");
+	}
+	if (totalprecip_mm2 != NULL) {
+		strcat(str, "total precip. ");
+		strcat(str, (char *)json_object_get_string(totalprecip_mm2));
+		strcat(str, "mm/");
+	}
+	if (totalprecip_in2 != NULL) {
+		strcat(str, (char *)json_object_get_string(totalprecip_in2));
+		strcat(str, "in, ");
+	}
+	if (totalsnow_cm2 != NULL) {
+		strcat(str, "total snow ");
+		strcat(str, (char *)json_object_get_string(totalsnow_cm2));
+		strcat(str, "cm");
+	}
 	
 	json_object_put(root);
 	
@@ -233,46 +444,60 @@ static char *APIWeather(char *city) {
 	/////////////////////////////
 	char *str = malloc(4096);
 	memset(str, 0, 4096);
-	char *value = (char *)json_object_get_string(name);
-	sprintf(str, "%s, ", value);
+	if (name != NULL)
+		sprintf(str, "%s, ", (char *)json_object_get_string(name));
 	if (region != NULL) {
-		value = (char *)json_object_get_string(region);
-		strcat(str, value);
+		strcat(str, (char *)json_object_get_string(region));
 		strcat(str, ", ");
 	}
-	value = (char *)json_object_get_string(country);
-	strcat(str, value);
-	strcat(str, ": ");
-	value = (char *)json_object_get_string(text);
-	strcat(str, value);
-	strcat(str, ", ");
-	value = (char *)json_object_get_string(temp_c);
-	strcat(str, value);
-	strcat(str, "C/");
-	value = (char *)json_object_get_string(temp_f);
-	strcat(str, value);
-	strcat(str, "F feels like ");
-	value = (char *)json_object_get_string(feels_c);
-	strcat(str, value);
-	strcat(str, "C/");
-	value = (char *)json_object_get_string(feels_f);
-	strcat(str, value);
-	strcat(str, "F, wind ");
-	value = (char *)json_object_get_string(wind_k);
-	strcat(str, value);
-	strcat(str, "kmh/");
-	value = (char *)json_object_get_string(wind_m);
-	strcat(str, value);
-	strcat(str, "mph, gust ");
-	value = (char *)json_object_get_string(gust_k);
-	strcat(str, value);
-	strcat(str, "kmh/");
-	value = (char *)json_object_get_string(gust_m);
-	strcat(str, value);
-	strcat(str, "mph, precip. ");
-	value = (char *)json_object_get_string(precip);
-	strcat(str, value);
-	strcat(str, "mm");
+	if (country != NULL) {
+		strcat(str, (char *)json_object_get_string(country));
+		strcat(str, ": ");
+	}
+	if (text != NULL) {
+		strcat(str, (char *)json_object_get_string(text));
+		strcat(str, ", ");
+	}
+	if (temp_c != NULL) {
+		strcat(str, (char *)json_object_get_string(temp_c));
+		strcat(str, "C/");
+	}
+	if (temp_f != NULL) {
+		strcat(str, (char *)json_object_get_string(temp_f));
+		strcat(str, "F ");
+	}
+	if (feels_c != NULL) {
+		strcat(str, "feels like ");
+		strcat(str, (char *)json_object_get_string(feels_c));
+		strcat(str, "C/");
+	}
+	if (feels_f != NULL) {
+		strcat(str, (char *)json_object_get_string(feels_f));
+		strcat(str, "F, ");
+	}
+	if (wind_k != NULL) {
+		strcat(str, "wind ");
+		strcat(str, (char *)json_object_get_string(wind_k));
+		strcat(str, "kmh/");
+	}
+	if (wind_m != NULL) {
+		strcat(str, (char *)json_object_get_string(wind_m));
+		strcat(str, "mph, ");
+	}
+	if (gust_k != NULL) {
+		strcat(str, "gust ");
+		strcat(str, (char *)json_object_get_string(gust_k));
+		strcat(str, "kmh/");
+	}
+	if (gust_m != NULL) {
+		strcat(str, (char *)json_object_get_string(gust_m));
+		strcat(str, "mph, ");
+	}
+	if (precip != NULL) {
+		strcat(str, "precip. ");
+		strcat(str, (char *)json_object_get_string(precip));
+		strcat(str, "mm");
+	}
 	
 	json_object_put(root);
 	
@@ -299,6 +524,8 @@ int main(int argc, char **argv) {
 	fgets(str, 1023, fp);
 	if (*str == 'a')
 		request_type = API_REQ_TYPE_ASTRO;
+	else if (*str == 'f')
+		request_type = API_REQ_TYPE_FORECAST;
 	else if (*str == 'w')
 		request_type = API_REQ_TYPE_WEATHER;
 	else
@@ -313,6 +540,8 @@ int main(int argc, char **argv) {
 	char *retstr = NULL;
 	if (request_type == API_REQ_TYPE_ASTRO)
 		retstr = APIAstro(city);
+	else if (request_type == API_REQ_TYPE_FORECAST)
+		retstr = APIForecast(city);
 	else if (request_type == API_REQ_TYPE_WEATHER)
 		retstr = APIWeather(city);
 	
@@ -344,7 +573,7 @@ int main(int argc, char **argv) {
 	}
 	fputs("done", fp);
 	fclose(fp);
-  }
+  } // while (1)
 	curl_global_cleanup();
 }
 

@@ -328,6 +328,21 @@ strcmp(raw.command, "NICK") != 0) {
 		}
 		else if (strncmp(raw.text+1, "foldoc ", 7) == 0)
 			Foldoc(&raw);
+// forecast
+		else if (strcmp(raw.text+1, "forecast") == 0) {
+			sprintf(buf, "forecast: missing city argument, example: "
+				"'%cforecast montreal'", trigger_char);
+			Msg(buf);
+		}
+		else if (strncmp(raw.text+1, "forecast ", 9) == 0) {
+			if (weather_disabled || stat("weather_disabled", &st) == 0) {
+				sprintf(buf, "%cforecast is currently disabled, try again later or "
+					"ask an admin to enable it", trigger_char);
+				Msg(buf);
+			}
+			else
+				Forecast(&raw);
+		}
 // fortune
 		else if (strncmp(raw.text+1, "fortune", 7) == 0)
 			Fortune(&raw);

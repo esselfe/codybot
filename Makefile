@@ -5,11 +5,12 @@ OBJDIR = obj
 OBJS = $(OBJDIR)/admin.o $(OBJDIR)/cmd-ascii-art.o $(OBJDIR)/cmd-astro.o \
 $(OBJDIR)/cmd-cal.o $(OBJDIR)/cmd-calc.o $(OBJDIR)/cmd-cc.o \
 $(OBJDIR)/cmd-chars.o $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o \
-$(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-fortune.o \
-$(OBJDIR)/cmd-joke.o $(OBJDIR)/cmd-rainbow.o $(OBJDIR)/cmd-sh.o \
-$(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o $(OBJDIR)/cmd-weather.o \
-$(OBJDIR)/codybot.o $(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o \
-$(OBJDIR)/server.o $(OBJDIR)/raw.o $(OBJDIR)/thread.o
+$(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-forecast.o \
+$(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o $(OBJDIR)/cmd-rainbow.o \
+$(OBJDIR)/cmd-sh.o $(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o \
+$(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o $(OBJDIR)/console.o \
+$(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o $(OBJDIR)/raw.o \
+$(OBJDIR)/thread.o
 PROGNAME = codybot
 PROGNAME_API = api-fetcher
 
@@ -54,6 +55,9 @@ $(OBJDIR)/cmd-dict.o: src/cmd-dict.c
 
 $(OBJDIR)/cmd-foldoc.o: src/cmd-foldoc.c
 	gcc -c $(CFLAGS) src/cmd-foldoc.c -o $(OBJDIR)/cmd-foldoc.o
+
+$(OBJDIR)/cmd-forecast.o: src/cmd-forecast.c
+	gcc -c $(CFLAGS) src/cmd-forecast.c -o $(OBJDIR)/cmd-forecast.o
 
 $(OBJDIR)/cmd-fortune.o: src/cmd-fortune.c
 	gcc -c $(CFLAGS) src/cmd-fortune.c -o $(OBJDIR)/cmd-fortune.o

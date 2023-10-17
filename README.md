@@ -163,7 +163,7 @@ Once in the container, run:
 	<ctrl+b><c>
 	su - codybot
 	cd codybot
-	./codybot -l log.fifo -n NewNickHere
+	./codybot -n NewNickHere
 
 Personally I made a 1GB partition on my host just for the bot and
 its users' usage, then mount it (on the host) to `/mnt/codybot-data`,

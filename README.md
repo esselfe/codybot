@@ -157,6 +157,7 @@ Once in the container, run:
 	tmux
 	su - user
 	cd codybot
+	echo 'a8b2c3d4e5f6...your_www.weatherapi.com_key_here' > api.key
 	./api-fetcher &
 	scripts/logd.sh &
 	<ctrl+b><c>

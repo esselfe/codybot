@@ -29,8 +29,10 @@ void Date(int offset) {
 
 	size_t size = 1024;
 	char *line = malloc(size);
-	memset(line, 0, 1024);
+	memset(line, 0, size);
 	getline(&line, &size, fp);
+	fclose(fp);
 	Msg(line);
+	free(line);
 }
 

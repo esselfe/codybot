@@ -134,15 +134,17 @@ int main(int argc, char **argv) {
 			printf("codybot %s\n", codybot_version_string);
 			exit(0);
 		case 'c': // --compiler
-			if (strcmp(optarg, "clang") == 0)
-				cc_compiler = CC_COMPILER_CLANG;
-			else if (strcmp(optarg, "gcc") == 0)
-				cc_compiler = CC_COMPILER_GCC;
-			else if (strcmp(optarg, "tcc") == 0)
-				cc_compiler = CC_COMPILER_TCC;
-			else {
-				printf("codybot error: the compiler must be clang, gcc or tcc\n");
-				exit(1);
+			if (optarg) {
+				if (strcmp(optarg, "clang") == 0)
+					cc_compiler = CC_COMPILER_CLANG;
+				else if (strcmp(optarg, "gcc") == 0)
+					cc_compiler = CC_COMPILER_GCC;
+				else if (strcmp(optarg, "tcc") == 0)
+					cc_compiler = CC_COMPILER_TCC;
+				else {
+					printf("codybot error: the compiler must be clang, gcc or tcc\n");
+					exit(1);
+				}
 			}
 			break;
 		case 'd': // --debug

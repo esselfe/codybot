@@ -114,8 +114,8 @@ strcmp(raw.command, "NICK") != 0) {
 			char c = trigger_char;
 			sprintf(buf, "commands: %cabout %cadmins %cascii %castro %ccal %ccalc %ccc "
 				"%cchars %ccolorize %cdate %cdict %cfoldoc %chelp %cfortune %cjoke "
-				"%crainbow %csh %cstats %cuptime %cversion %cweather",
-				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
+				"%crainbow %csh %cstats %ctime %cuptime %cversion %cweather",
+				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
 			Msg(buf);
 			continue;
 		}
@@ -393,6 +393,14 @@ strcmp(raw.command, "NICK") != 0) {
 // stats
 		else if (strcmp(raw.text+1, "stats") == 0)
 			Stats(&raw);
+// time
+		else if (strcmp(raw.text+1, "time") == 0) {
+			sprintf(buf, "time: missing city argument, example: "
+				"'%ctime montreal'", trigger_char);
+			Msg(buf);
+		}
+		else if (strncmp(raw.text+1, "time ", 5) == 0)
+			Time(&raw);
 // timeout
 		else if (strcmp(raw.text+1, "timeout") == 0) {
 			sprintf(buf, "timeout = %d", cmd_timeout);

@@ -87,6 +87,7 @@ void Calc(struct raw_line *rawp);
 void CC(struct raw_line *rawp);
 void Chars(struct raw_line *rawp);
 void Colorize(struct raw_line *rawp);
+void Date(int offset);
 void Dict(struct raw_line *rawp);
 void Foldoc(struct raw_line *rawp);
 void Forecast(struct raw_line *rawp);
@@ -97,16 +98,11 @@ void ShRunStart(char *command);
 void *ShRunFunc(void *argp);
 void SlapCheck(struct raw_line *rawp);
 void Stats(struct raw_line *rawp);
+void Time(struct raw_line *rawp);
 void Weather(struct raw_line *rawp);
 
 // from console.c
 void ConsoleReadInput(void);
-
-// from cmd-date.c
-void Date(int offset);
-
-// from dict.c
-void Dict(struct raw_line *rawp);
 
 // from log.c
 void Log(unsigned int direction, char *text);

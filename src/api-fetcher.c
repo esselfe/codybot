@@ -11,7 +11,8 @@
 #define API_REQ_TYPE_UNSET    0
 #define API_REQ_TYPE_ASTRO    1
 #define API_REQ_TYPE_FORECAST 2
-#define API_REQ_TYPE_WEATHER  3
+#define API_REQ_TYPE_TIME     3
+#define API_REQ_TYPE_WEATHER  4
 
 static void APIKeyStripNewLine(char *key) {
 	char *cp = key;
@@ -370,6 +371,101 @@ static char *APIForecast(char *city) {
 	return str;
 }
 
+static char *APITime(char *city) {
+	// Retrieve API key
+	///////////////////
+	char *key = APIGetKey();
+	if (key == NULL)
+		return NULL;
+	
+	// Perform curl request
+	///////////////////////
+	CURL *handle = curl_easy_init();
+	
+	char url[4096];
+	memset(url, 0, 4096);
+	sprintf(url, "https://api.weatherapi.com/v1/timezone.json"
+		"?key=%s&q=%s", key, city);
+	free(key);
+	curl_easy_setopt(handle, CURLOPT_URL, url);
+	
+	FILE *fp = fopen("cmd.output", "w");
+	if (fp == NULL) {
+		printf("api-fetcher error: Cannot open cmd.output: %s\n",
+			strerror(errno));
+		curl_easy_cleanup(handle);
+		return NULL;
+	}
+	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
+	
+	CURLcode ret = curl_easy_perform(handle);
+	if (ret != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+		curl_easy_cleanup(handle);
+		fclose(fp);
+		return NULL;
+	}
+	fclose(fp);
+	curl_easy_cleanup(handle);
+
+	// Parse the json results
+	/////////////////////////
+	json_object *root = json_object_from_file("cmd.output");
+	if (root == NULL) {
+		char *str = malloc(32);
+		sprintf(str, "No results.");
+		return str;
+	}
+	
+	json_object *location = json_object_object_get(root, "location");
+	if (location == NULL) {
+		json_object *error = json_object_object_get(root, "error");
+		if (error == NULL) {
+			json_object_put(root);
+			char *errstr = malloc(128);
+			sprintf(errstr, "No location found in response.");
+			return errstr;
+		}
+		else {
+			json_object *message = json_object_object_get(error, "message");
+			char *val = strdup(json_object_get_string(message));
+			json_object_put(root);
+			return val;
+		}
+	}
+	json_object *name = json_object_object_get(location, "name");
+	json_object *region = json_object_object_get(location, "region");
+	json_object *country = json_object_object_get(location, "country");
+	json_object *tz_id = json_object_object_get(location, "tz_id");
+	json_object *time_string = json_object_object_get(location, "localtime");
+        
+	// Create final output string
+	/////////////////////////////
+	char *str = malloc(4096);
+	memset(str, 0, 4096);
+	if (name != NULL)
+		sprintf(str, "%s, ", (char *)json_object_get_string(name));
+	if (region != NULL) {
+		strcat(str, (char *)json_object_get_string(region));
+		strcat(str, ", ");
+	}
+	if (country != NULL) {
+		strcat(str, (char *)json_object_get_string(country));
+		strcat(str, ", ");
+	}
+	if (tz_id != NULL) {
+		strcat(str, "timezone ");
+		strcat(str, (char *)json_object_get_string(tz_id));
+		strcat(str, ", ");
+	}
+	if (time_string != NULL)
+		strcat(str, (char *)json_object_get_string(time_string));
+	
+	json_object_put(root);
+	
+	return str;
+}
+
 static char *APIWeather(char *city) {
 	// Retrieve API key
 	///////////////////
@@ -535,6 +631,8 @@ int main(int argc, char **argv) {
 		request_type = API_REQ_TYPE_ASTRO;
 	else if (*str == 'f')
 		request_type = API_REQ_TYPE_FORECAST;
+	else if (*str == 't')
+		request_type = API_REQ_TYPE_TIME;
 	else if (*str == 'w')
 		request_type = API_REQ_TYPE_WEATHER;
 	else
@@ -551,6 +649,8 @@ int main(int argc, char **argv) {
 		retstr = APIAstro(city);
 	else if (request_type == API_REQ_TYPE_FORECAST)
 		retstr = APIForecast(city);
+	else if (request_type == API_REQ_TYPE_TIME)
+		retstr = APITime(city);
 	else if (request_type == API_REQ_TYPE_WEATHER)
 		retstr = APIWeather(city);
 	

@@ -8,9 +8,9 @@ $(OBJDIR)/cmd-chars.o $(OBJDIR)/cmd-colorize.o $(OBJDIR)/cmd-date.o \
 $(OBJDIR)/cmd-dict.o $(OBJDIR)/cmd-foldoc.o $(OBJDIR)/cmd-forecast.o \
 $(OBJDIR)/cmd-fortune.o $(OBJDIR)/cmd-joke.o $(OBJDIR)/cmd-rainbow.o \
 $(OBJDIR)/cmd-sh.o $(OBJDIR)/cmd-slap.o $(OBJDIR)/cmd-stats.o \
-$(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o $(OBJDIR)/console.o \
-$(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o $(OBJDIR)/raw.o \
-$(OBJDIR)/thread.o
+$(OBJDIR)/cmd-time.o $(OBJDIR)/cmd-weather.o $(OBJDIR)/codybot.o \
+$(OBJDIR)/console.o $(OBJDIR)/log.o $(OBJDIR)/msg.o $(OBJDIR)/server.o \
+$(OBJDIR)/raw.o $(OBJDIR)/thread.o
 PROGNAME = codybot
 PROGNAME_API = api-fetcher
 
@@ -76,6 +76,9 @@ $(OBJDIR)/cmd-slap.o: src/cmd-slap.c
 
 $(OBJDIR)/cmd-stats.o: src/cmd-stats.c
 	gcc -c $(CFLAGS) src/cmd-stats.c -o $(OBJDIR)/cmd-stats.o
+
+$(OBJDIR)/cmd-time.o: src/cmd-time.c
+	gcc -c $(CFLAGS) src/cmd-time.c -o $(OBJDIR)/cmd-time.o
 
 $(OBJDIR)/cmd-weather.o: src/cmd-weather.c
 	gcc -c $(CFLAGS) src/cmd-weather.c -o $(OBJDIR)/cmd-weather.o

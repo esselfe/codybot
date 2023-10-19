@@ -36,6 +36,7 @@ void CC(struct raw_line *rawp) {
 		sprintf(buffer, "codybot error: Cannot open prog.c: %s",
 			strerror(errno));
 		Msg(buffer);
+		fclose(fr);
 		return;
 	}
 
@@ -54,6 +55,7 @@ void CC(struct raw_line *rawp) {
 		sprintf(buffer, "codybot error: Cannot open prog-tail.c: %s",
 			strerror(errno));
 		Msg(buffer);
+		fclose(fp);
 		return;
 	}
 	while (fgets(buffer, 1024, fr) != NULL)

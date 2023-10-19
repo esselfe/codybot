@@ -100,6 +100,7 @@ void *ShRunFunc(void *argp) {
 	if (sto.st_size == 1 && lines_total == 1) {
 		Msg("(No output)");
 		free(text);
+		fclose(fp);
 		return NULL;
 	}
 

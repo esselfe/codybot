@@ -43,6 +43,7 @@ void *ShRunFunc(void *argp) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open prog.sh: %s",
 			strerror(errno));
 		Msg(buf);
+		free(text);
 		return NULL;
 	}
 	fputs(text, fp);
@@ -58,6 +59,7 @@ void *ShRunFunc(void *argp) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
 			strerror(errno));
 		Msg(buf);
+		free(text);
 		return NULL;
 	}
 	fgets(buf, 4096, fp);

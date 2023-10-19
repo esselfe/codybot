@@ -56,10 +56,12 @@ static char *APIAstro(char *city) {
 	
 	char datestr[64];
 	memset(datestr, 0, 64);
-	time_t t0 = time(NULL);
-	struct tm *tm0 = localtime(&t0);
-	sprintf(datestr, "%d-%02d-%02d", tm0->tm_year+1900, tm0->tm_mon+1,
-		tm0->tm_mday);
+	time_t t1 = time(NULL);
+	struct tm *tm1 = malloc(sizeof(struct tm));
+	localtime_r(&t1, tm1);
+	sprintf(datestr, "%d-%02d-%02d", tm1->tm_year+1900, tm1->tm_mon+1,
+		tm1->tm_mday);
+	free(tm1);
 	
 	char url[4096];
 	memset(url, 0, 4096);

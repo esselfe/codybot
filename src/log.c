@@ -50,6 +50,7 @@ void Log(unsigned int direction, char *text) {
 	
 	memset(buffer_log, 0, 4096);
 
+	free(str);
 	fclose(fp);
 }
 

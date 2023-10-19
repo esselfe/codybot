@@ -152,7 +152,7 @@ void ServerConnect(void) {
 	else
 		write(socket_fd, "PASS none\n", 10);
 */
-	struct stat st;
+	/* struct stat st;
 	if (stat(".passwd", &st) == 0) {
 		FILE *fp = fopen(".passwd", "r");
 		if (fp != NULL) {
@@ -165,7 +165,7 @@ void ServerConnect(void) {
 			memset(pass, 0, 128);
 			fclose(fp);
 		}
-	}
+	} */
 
 	sprintf(buffer, "NICK %s\n", nick);
 	MsgRaw(buffer);

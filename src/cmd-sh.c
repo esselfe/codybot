@@ -65,17 +65,21 @@ void *ShRunFunc(void *argp) {
 	if (ret == 124) {
 		sprintf(buf, "sh: %s: timed out", text);
 		Msg(buf);
+		free(text);
 		return NULL;
 	}
 
-	if (ShCheckEmptyOutput())
+	if (ShCheckEmptyOutput()) {
+		free(text);
 		return NULL;
+	}
 
 	fp = fopen("cmd.output", "r");
 	if (fp == NULL) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
 			strerror(errno));
 		Msg(buf);
+		free(text);
 		return NULL;
 	}
 
@@ -95,6 +99,7 @@ void *ShRunFunc(void *argp) {
 	stat("cmd.output", &sto);
 	if (sto.st_size == 1 && lines_total == 1) {
 		Msg("(No output)");
+		free(text);
 		return NULL;
 	}
 
@@ -154,6 +159,8 @@ void *ShRunFunc(void *argp) {
 	fclose(fp);
 
 	printf("&& Thread stopped, ret: %d ::%s::\n", ret, text);
+
+	free(text);
 
 	return NULL;
 }

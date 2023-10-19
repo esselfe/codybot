@@ -124,6 +124,7 @@ void *WeatherFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open cmd.output: %s",
 			strerror(errno));
 		Msg(buffer);
+		free(str);
 		return NULL;
 	}
 	memset(str, 0, 1024);

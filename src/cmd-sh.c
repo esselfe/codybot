@@ -63,13 +63,14 @@ void *ShRunFunc(void *argp) {
 		Msg("(No output)");
 		return NULL;
 	}
-
-	fp = fopen("cmd.output", "r");
-	if (fp == NULL) {
-		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
-			strerror(errno));
-		Msg(buf);
-		return NULL;
+	else {
+		fp = fopen("cmd.output", "r");
+		if (fp == NULL) {
+			sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
+				strerror(errno));
+			Msg(buf);
+			return NULL;
+		}
 	}
 
 	// count the line number

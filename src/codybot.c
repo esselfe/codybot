@@ -198,7 +198,9 @@ int main(int argc, char **argv) {
 			}
 			break;
 		case 't': // --trigger
-			trigger_char = *optarg;
+			if (optarg) {
+				trigger_char = *optarg;
+			}
 			break;
 		default:
 			fprintf(stderr, 

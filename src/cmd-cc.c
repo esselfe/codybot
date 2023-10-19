@@ -81,6 +81,13 @@ void CC(struct raw_line *rawp) {
 		char chars_line[4096];
 		char *str;
 		fp = fopen("cmd.output", "r");
+		if (fp == NULL) {
+			sprintf(buffer,
+				"codybot::CC() error: Cannot open cmd.output: %s",
+				strerror(errno));
+			Msg(buffer);
+			return;
+		}
 		while (1) {
 			str = fgets(chars_line, 4095, fp);
 			if (str == NULL) break;

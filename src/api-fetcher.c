@@ -13,6 +13,17 @@
 #define API_REQ_TYPE_FORECAST 2
 #define API_REQ_TYPE_WEATHER  3
 
+static void APIKeyStripNewLine(char *key) {
+	char *cp = key;
+	while (*cp != '\0') {
+		if (*cp == '\n') {
+			*cp = '\0';
+			break;
+		}
+		++cp;
+	}
+}
+
 static char *APIGetKey(void) {
 	FILE *fp = fopen("api.key", "r");
 	if (fp == NULL) {
@@ -25,9 +36,7 @@ static char *APIGetKey(void) {
 	fgets(key, 1023, fp);
 	fclose(fp);
 	
-	// Remove the newline at the end of the key string
-	if (*(key+strlen(key)-1) == '\n')
-		*(key+strlen(key)-1) = '\0';
+	APIKeyStripNewLine(key);
 	
 	return key;
 }

@@ -10,6 +10,17 @@
 
 #include "codybot.h"
 
+int ShCheckEmptyOutput(void) {
+	struct stat sto;
+	stat("cmd.output", &sto);
+	if (sto.st_size == 0) {
+		Msg("(No output)");
+		return 1;
+	}
+	
+	return 0;
+}
+
 // Execute a shell command as a new thread.
 void ShRunStart(char *command) {
 	pthread_t thr;
@@ -57,20 +68,15 @@ void *ShRunFunc(void *argp) {
 		return NULL;
 	}
 
-	struct stat sto;
-	stat("cmd.output", &sto);
-	if (sto.st_size == 0) {
-		Msg("(No output)");
+	if (ShCheckEmptyOutput())
 		return NULL;
-	}
-	else {
-		fp = fopen("cmd.output", "r");
-		if (fp == NULL) {
-			sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
-				strerror(errno));
-			Msg(buf);
-			return NULL;
-		}
+
+	fp = fopen("cmd.output", "r");
+	if (fp == NULL) {
+		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.output: %s",
+			strerror(errno));
+		Msg(buf);
+		return NULL;
 	}
 
 	// count the line number
@@ -84,7 +90,9 @@ void *ShRunFunc(void *argp) {
 			++lines_total;
 	}
 	fseek(fp, 0, SEEK_SET);
-
+	
+	struct stat sto;
+	stat("cmd.output", &sto);
 	if (sto.st_size == 1 && lines_total == 1) {
 		Msg("(No output)");
 		return NULL;

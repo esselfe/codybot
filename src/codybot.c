@@ -177,11 +177,9 @@ int main(int argc, char **argv) {
 			use_ssl = 1;
 			break;
 		case 's': // --server
-			if (optarg != NULL) {
-				server_name = malloc(strlen(optarg)+1);
-				sprintf(server_name, "%s", optarg);
-				ServerGetIP(server_name);
-			}
+			server_name = malloc(strlen(optarg)+1);
+			sprintf(server_name, "%s", optarg);
+			ServerGetIP(server_name);
 			break;
 		case 't': // --trigger
 			trigger_char = *optarg;

@@ -143,6 +143,7 @@ void *ShRunFunc(void *argp) {
 			
 			Msg(result);
 		}
+		free(result);
 	}
 	else if (lines_total >= lines_max+1) {
 		system("bash -c 'cat cmd.output | nc termbin.com 9999 > cmd.url'");

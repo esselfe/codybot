@@ -110,6 +110,7 @@ void ServerConnect(void) {
 			exit(1);
 		}
 		SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
+		SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 	
 		pSSL = SSL_new(ctx);
 		//long opt_ssl;

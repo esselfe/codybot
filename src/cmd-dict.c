@@ -78,6 +78,7 @@ void Dict(struct raw_line *rawp) {
 			sprintf(buffer, "##codybot::Dict() error: Cannot open cmd.url: %s",
 				strerror(errno));
 			Msg(buffer);
+			free(line);
 			return;
 		}
 
@@ -87,5 +88,6 @@ void Dict(struct raw_line *rawp) {
 		
 		fclose(fp);
 	}
+	free(line);
 }
 

@@ -43,6 +43,7 @@ void *ShRunFunc(void *argp) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open prog.sh: %s",
 			strerror(errno));
 		Msg(buf);
+		return NULL;
 	}
 	fputs(text, fp);
 	fclose(fp);

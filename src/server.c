@@ -129,6 +129,7 @@ void ServerConnect(void) {
 	
 		BIO *bio = BIO_new_socket(socket_fd, BIO_CLOSE);
 		SSL_set_bio(pSSL, bio, bio);
+		SSL_set1_host(pSSL, server_name);
 		SSL_connect(pSSL);
 		ret = SSL_accept(pSSL);
 		if (ret <= 0) {

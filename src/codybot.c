@@ -177,7 +177,9 @@ int main(int argc, char **argv) {
 			use_ssl = 1;
 			break;
 		case 's': // --server
-			ServerGetIP(optarg);
+			server_name = malloc(strlen(optarg)+1);
+			sprintf(server_name, "%s", optarg);
+			ServerGetIP(server_name);
 			break;
 		case 't': // --trigger
 			trigger_char = *optarg;
@@ -236,17 +238,21 @@ int main(int argc, char **argv) {
 		server_port = 6697;
 		use_ssl = 1;
 	}
-	if (!server_ip)
-		ServerGetIP("irc.libera.chat");
-	if (!trigger_char)
-		trigger_char = trigger_char_default;
-
+	if (!server_name) {
+		char *tmpstr = "irc.libera.chat";
+		server_name = malloc(strlen(tmpstr)+1);
+		sprintf(server_name, "%s", tmpstr);
+	}
 	if (strcmp(server_name, "irc.blinkenshell.org") == 0) {
 		// Don't wanna replace blinken's shell service
 		// Note that those features are clearly refused by the owner
 		sh_disabled = 1;
 		cc_disabled = 1;
 	}
+	if (!server_ip)
+		ServerGetIP(server_name);
+	if (!trigger_char)
+		trigger_char = trigger_char_default;
 
 	raw.nick = (char *)malloc(1024);
 	raw.username = (char *)malloc(1024);

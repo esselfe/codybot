@@ -151,37 +151,51 @@ int main(int argc, char **argv) {
 			debug = 1;
 			break;
 		case 'H': // --hostname
-			hostname = (char *)malloc(strlen(optarg)+1);
-			sprintf(hostname, optarg);
+			if (optarg) {
+				hostname = (char *)malloc(strlen(optarg)+1);
+				sprintf(hostname, optarg);
+			}
 			break;
 		case 'l': // --log
-			log_filename = (char *)malloc(strlen(optarg)+1);
-			sprintf(log_filename, "%s", optarg);
+			if (optarg) {
+				log_filename = (char *)malloc(strlen(optarg)+1);
+				sprintf(log_filename, "%s", optarg);
+			}
 			break;
 		case 'N': // --fullname
-			full_user_name = (char *)malloc(strlen(optarg)+1);
-			sprintf(full_user_name, optarg);
+			if (optarg) {
+				full_user_name = (char *)malloc(strlen(optarg)+1);
+				sprintf(full_user_name, optarg);
+			}
 			break;
 		case 'n': // --nick
-			nick = (char *)malloc(strlen(optarg)+1);
-			sprintf(nick, "%s", optarg);
+			if (optarg) {
+				nick = (char *)malloc(strlen(optarg)+1);
+				sprintf(nick, "%s", optarg);
+			}
 			break;
 		case 'P': // --localport
-			local_port = atoi(optarg);
+			if (optarg) {
+				local_port = atoi(optarg);
+			}
 			break;
 		case 'p': // --port
-			server_port = atoi(optarg);
-			if (server_port == 6697 || server_port == 7000 ||
-			  server_port == 7070)
-				use_ssl = 1;
+			if (optarg) {
+				server_port = atoi(optarg);
+				if (server_port == 6697 || server_port == 7000 ||
+				  server_port == 7070)
+					use_ssl = 1;
+			}
 			break;
 		case 'S': // --ssl
 			use_ssl = 1;
 			break;
 		case 's': // --server
-			server_name = malloc(strlen(optarg)+1);
-			sprintf(server_name, "%s", optarg);
-			ServerGetIP(server_name);
+			if (optarg) {
+				server_name = malloc(strlen(optarg)+1);
+				sprintf(server_name, "%s", optarg);
+				ServerGetIP(server_name);
+			}
 			break;
 		case 't': // --trigger
 			trigger_char = *optarg;

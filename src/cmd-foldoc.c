@@ -49,7 +49,7 @@ void Foldoc(struct raw_line *rawp) {
 	char *line = malloc(size);
 	int line_cnt = 0;
 	while (1) {
-		memset(line, 0, 1024);
+		memset(line, 0, size);
 		bytes_read = getline(&line, &size, fp);
 		if (bytes_read == -1)
 			break;
@@ -85,6 +85,7 @@ void Foldoc(struct raw_line *rawp) {
 			sprintf(buffer, "##codybot::Foldoc() error: Cannot open cmd.url: %s",
 				strerror(errno));
 			Msg(buffer);
+			free(line);
 			return;
 		}
 
@@ -94,5 +95,6 @@ void Foldoc(struct raw_line *rawp) {
 		
 		fclose(fp);
 	}
+	free(line);
 }
 

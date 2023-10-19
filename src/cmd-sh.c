@@ -58,6 +58,7 @@ void *ShRunFunc(void *argp) {
 		sprintf(buf, "codybot::ShRunFunc() error: Cannot open cmd.ret: %s",
 			strerror(errno));
 		Msg(buf);
+		return NULL;
 	}
 	fgets(buf, 4096, fp);
 	fclose(fp);

@@ -108,14 +108,15 @@ void *ShRunFunc(void *argp) {
 	if (strcmp(raw.channel, "#codybot") == 0)
 		lines_max = 10;
 	if (lines_total <= lines_max) {
-		char *result = (char *)malloc(4096);
-		memset(result, 0, 4096);
 		size_t size = 4095;
+		char *result = (char *)malloc(size+1);
 		while (1) {
+			memset(result, 0, size+1);
 			int ret2 = getline(&result, &size, fp);
 			if (ret2 < 0) break;
 			else { // Change all tab characters with a space since it
 				// doesn't display right on IRC
+				// Also remove the newline
 				char tabstr[4096];
 				memset(tabstr, 0, 4096);
 				sprintf(tabstr, "%s", result);
@@ -128,6 +129,8 @@ void *ShRunFunc(void *argp) {
 						result[cnt++] = ' ';
 						result[cnt++] = ' ';
 					}
+					else if (*c == '\n')
+						break;
 					else {
 						result[cnt++] = *c;
 					}
@@ -137,9 +140,7 @@ void *ShRunFunc(void *argp) {
 						break;
 				}
 			}
-
-			if (result[strlen(result)-1] == '\n')
-				result[strlen(result)-1] = '\0';
+			
 			Msg(result);
 		}
 	}

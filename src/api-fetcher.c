@@ -52,6 +52,7 @@ static char *APIAstro(char *city) {
 	// Perform curl request
 	///////////////////////
 	CURL *handle = curl_easy_init();
+	curl_easy_setopt(handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 	
 	char datestr[64];
 	memset(datestr, 0, 64);
@@ -185,6 +186,7 @@ static char *APIForecast(char *city) {
 	// Perform curl request
 	///////////////////////
 	CURL *handle = curl_easy_init();
+	curl_easy_setopt(handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 	
 	char url[4096];
 	memset(url, 0, 4096);
@@ -381,6 +383,7 @@ static char *APITime(char *city) {
 	// Perform curl request
 	///////////////////////
 	CURL *handle = curl_easy_init();
+	curl_easy_setopt(handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 	
 	char url[4096];
 	memset(url, 0, 4096);
@@ -476,6 +479,7 @@ static char *APIWeather(char *city) {
 	// Perform curl request
 	///////////////////////
 	CURL *handle = curl_easy_init();
+	curl_easy_setopt(handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 	
 	char url[4096];
 	memset(url, 0, 4096);

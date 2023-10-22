@@ -45,6 +45,7 @@ void *WeatherFunc(void *ptr) {
 
 	if (!WeatherCheckUsage()) {
 		Msg("Weather quota reached, maximum 10 times every 30 minutes.");
+		RawLineFree(rawp);
 		return NULL;
 	}
 
@@ -55,6 +56,7 @@ void *WeatherFunc(void *ptr) {
 			break;
 		if (strlen(c) >= 5 && strncmp(c, "kill", 4) == 0) {
 			Msg("weather: contains a blocked term...");
+			RawLineFree(rawp);
 			return NULL;
 		}
 		++c;
@@ -98,6 +100,7 @@ void *WeatherFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	char str2[256];
@@ -111,6 +114,7 @@ void *WeatherFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	char *str = malloc(1024);
@@ -125,6 +129,7 @@ void *WeatherFunc(void *ptr) {
 			strerror(errno));
 		Msg(buffer);
 		free(str);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	memset(str, 0, 1024);
@@ -132,6 +137,8 @@ void *WeatherFunc(void *ptr) {
 	fclose(fp);
 	Msg(str);
 	free(str);
+	
+	RawLineFree(rawp);
 	
 	return NULL;
 }

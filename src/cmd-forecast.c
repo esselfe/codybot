@@ -45,6 +45,7 @@ static void *ForecastFunc(void *ptr) {
 
 	if (!ForecastCheckUsage()) {
 		Msg("Forecast quota reached, maximum 10 times every 30 minutes.");
+		RawLineFree(rawp);
 		return NULL;
 	}
 
@@ -86,6 +87,7 @@ static void *ForecastFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	char str2[256];
@@ -99,6 +101,7 @@ static void *ForecastFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	char *str = malloc(1024);
@@ -113,6 +116,7 @@ static void *ForecastFunc(void *ptr) {
 			strerror(errno));
 		Msg(buffer);
 		free(str);
+		RawLineFree(rawp);
 		return NULL;
 	}
 	memset(str, 0, 1024);
@@ -120,6 +124,8 @@ static void *ForecastFunc(void *ptr) {
 	fclose(fp);
 	Msg(str);
 	free(str);
+	
+	RawLineFree(rawp);
 	
 	return NULL;
 }

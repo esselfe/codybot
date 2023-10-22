@@ -43,14 +43,6 @@ extern char *server_ip, *server_name;
 extern SSL *pSSL;
 
 // Globals from raw.c
-// a raw line from the server should hold something like one of these:
-// :esselfe!~bsfc@unaffiliated/esselfe PRIVMSG #codybot :^stats
-// :codybot!~user@unaffiliated/esselfe PRIVMSG ##linux-offtopic :^fortune
-// :NickServ!NickServ@services. NOTICE codybot :Invalid password for codybot.
-// :freenode-connect!frigg@freenode/utility-bot/frigg NOTICE codybot :Welcome to freenode.
-// :PING :livingstone.freenode.net
-// :codybot MODE codybot :+Zi
-// :livingstone.freenode.net 372 codybot :- Thank you for using freenode!
 struct raw_line {
 	char *nick;
 	char *username;

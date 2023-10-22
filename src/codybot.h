@@ -23,13 +23,15 @@ extern char *log_filename; // $srcdir/codybot.log if not set, see main()
 // mostly used in system() calls. 'log' is used for data to $srcdir/codybot.log
 extern char *buffer, *buffer_cmd, *buffer_log;
 extern char trigger_char; // character which is prefixed to commands in IRC chat readout
-extern char *current_channel; // used as changeable default channel for console 
-							  // 'msg/fortune' cmd
+// used as changeable default channel for console 
+// 'msg/fortune' cmd
+extern char *current_channel;
 extern char *nick; // running bot's IRC nick
 extern char *full_user_name; // name displayed in IRC /whois responses
 extern char *hostname;
-extern char *target; // this one should be worked upon a little bit :P
-					 // used to differentiate channel-wide vs private messages
+// this one should be worked upon a little bit :P
+// used to differentiate channel-wide vs private messages
+extern char *target;
 extern char *colors[]; // IRC color codes used in '!colorize/!rainbow'
 
 // Log() directions

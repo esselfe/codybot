@@ -65,8 +65,10 @@ static char *APIAstro(char *city) {
 	
 	char url[4096];
 	memset(url, 0, 4096);
+	char *city_conv = curl_easy_escape(handle, city, 128);
 	sprintf(url, "https://api.weatherapi.com/v1/astronomy.json"
-		"?key=%s&q=%s&dt=%s", key, city, datestr);
+		"?key=%s&q=%s&dt=%s", key, city_conv, datestr);
+	curl_free(city_conv);
 	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
@@ -192,8 +194,10 @@ static char *APIForecast(char *city) {
 	
 	char url[4096];
 	memset(url, 0, 4096);
+	char *city_conv = curl_easy_escape(handle, city, 128);
 	sprintf(url, "https://api.weatherapi.com/v1/forecast.json"
-		"?key=%s&q=%s&days=3&aqi=no&alerts=no", key, city);
+		"?key=%s&q=%s&days=3&aqi=no&alerts=no", key, city_conv);
+	curl_free(city_conv);
 	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
@@ -389,8 +393,10 @@ static char *APITime(char *city) {
 	
 	char url[4096];
 	memset(url, 0, 4096);
+	char *city_conv = curl_easy_escape(handle, city, 128);
 	sprintf(url, "https://api.weatherapi.com/v1/timezone.json"
-		"?key=%s&q=%s", key, city);
+		"?key=%s&q=%s", key, city_conv);
+	curl_free(city_conv);
 	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	
@@ -485,8 +491,10 @@ static char *APIWeather(char *city) {
 	
 	char url[4096];
 	memset(url, 0, 4096);
+	char *city_conv = curl_easy_escape(handle, city, 128);
 	sprintf(url, "https://api.weatherapi.com/v1/current.json"
-		"?key=%s&q=%s", key, city);
+		"?key=%s&q=%s", key, city_conv);
+	curl_free(city_conv);
 	free(key);
 	curl_easy_setopt(handle, CURLOPT_URL, url);
 	

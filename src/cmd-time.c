@@ -49,10 +49,9 @@ static void *TimeFunc(void *ptr) {
 		return NULL;
 	}
 
-	unsigned int cnt = 0, cnt_conv = 0;
-	char city[128], city_conv[128], *cp = rawp->text + strlen("!time ");
+	unsigned int cnt = 0;
+	char city[128], *cp = rawp->text + strlen("!time ");
 	memset(city, 0, 128);
-	memset(city_conv, 0, 128);
 	while (1) {
 		if (*cp == '\n' || *cp == '\0' || cp - rawp->text >= 128)
 			break;
@@ -64,19 +63,9 @@ static void *TimeFunc(void *ptr) {
 			++cp;
 			continue;
 		}
-		else if (*cp == ' ') {
-			city[cnt++] = ' ';
-			city_conv[cnt_conv++] = '%';
-			city_conv[cnt_conv++] = '2';
-			city_conv[cnt_conv++] = '0';
-			++cp;
-			continue;
-		}
 		
 		city[cnt] = *cp;
-		city_conv[cnt_conv] = *cp;
 		++cnt;
-		++cnt_conv;
 		++cp;
 	}
 	RawLineFree(rawp);
@@ -87,11 +76,10 @@ static void *TimeFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
-		RawLineFree(rawp);
 		return NULL;
 	}
 	char str2[256];
-	sprintf(str2, "t %s", city_conv);
+	sprintf(str2, "t %s", city);
 	fputs(str2, fp);
 	fclose(fp);
 	
@@ -101,7 +89,6 @@ static void *TimeFunc(void *ptr) {
 		sprintf(buffer, "codybot error: Cannot open api-fetch: %s",
 			strerror(errno));
 		Msg(buffer);
-		RawLineFree(rawp);
 		return NULL;
 	}
 	char *str = malloc(1024);
@@ -116,7 +103,6 @@ static void *TimeFunc(void *ptr) {
 			strerror(errno));
 		Msg(buffer);
 		free(str);
-		RawLineFree(rawp);
 		return NULL;
 	}
 	memset(str, 0, 1024);
@@ -124,8 +110,6 @@ static void *TimeFunc(void *ptr) {
 	fclose(fp);
 	Msg(str);
 	free(str);
-	
-	RawLineFree(rawp);
 	
 	return NULL;
 }

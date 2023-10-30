@@ -113,7 +113,8 @@ The other commands are:
 If you want to use the chroot mechanism, you have to download the minimal chroot archive
 and extract it into the source directory. The latest chroot is available at  
 
-* https://esselfe.ca/codybot/chroot.tar.xz (minimal, 5.6MB download, extracts to 26MB)  
+* https://esselfe.ca/codybot/chroot.tar.xz (minimal, 5.6MB download, extracts to 26MB)
+* https://esselfe.ca/codybot/chroot-alpine.tar.xz (3.4MB to 73MB)  
 * https://esselfe.ca/codybot/chroot-arch.tar.xz (8.3MB to 40MB)  
 * https://esselfe.ca/codybot/chroot-aws.tar.xz (11MB to 66MB)  
 * https://esselfe.ca/codybot/chroot-debian.tar.xz (120MB to 370MB)

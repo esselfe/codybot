@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20231030
+20190824-20231107
 
 ## Overview
 
@@ -113,12 +113,12 @@ The other commands are:
 If you want to use the chroot mechanism, you have to download the minimal chroot archive
 and extract it into the source directory. The latest chroot is available at  
 
-* https://esselfe.ca/codybot/chroot.tar.xz (minimal, 5.6MB download, extracts to 26MB)
-* https://esselfe.ca/codybot/chroot-alpine.tar.xz (3.4MB to 73MB)  
-* https://esselfe.ca/codybot/chroot-arch.tar.xz (8.3MB to 40MB)  
-* https://esselfe.ca/codybot/chroot-aws.tar.xz (11MB to 66MB)  
-* https://esselfe.ca/codybot/chroot-debian.tar.xz (120MB to 370MB)
-* https://esselfe.ca/codybot/chroot-gentoo.tar.xz (244MB to 1.2GB)  
+* https://hobby.esselfe.ca/codybot/chroot.tar.xz (minimal, 5.6MB download, extracts to 26MB)
+* https://hobby.esselfe.ca/codybot/chroot-alpine.tar.xz (3.4MB to 73MB)  
+* https://hobby.esselfe.ca/codybot/chroot-arch.tar.xz (8.3MB to 40MB)  
+* https://hobby.esselfe.ca/codybot/chroot-aws.tar.xz (11MB to 66MB)  
+* https://hobby.esselfe.ca/codybot/chroot-debian.tar.xz (120MB to 370MB)
+* https://hobby.esselfe.ca/codybot/chroot-gentoo.tar.xz (244MB to 1.2GB)  
 
 To run all shell commands in a locked chroot, create a file called `sh_lock` or
 type `!sh_lock` or `!sh_unlock`. You have to run as root:  
@@ -189,7 +189,6 @@ You can also limit the permitted storage size by adding "--tmpfs /home/user/cody
   - https://codybot.u.blinkenshell.org/  
 - Main releases: https://github.com/esselfe/codybot/releases  
 - Archives:
-  - https://esselfe.ca/codybot/  
   - https://hobby.esselfe.ca/codybot/  
 
 ----

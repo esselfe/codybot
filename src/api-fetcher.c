@@ -81,9 +81,9 @@ static char *APIAstro(char *city) {
 	}
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
 	
-	CURLcode ret = curl_easy_perform(handle);
-	if (ret != CURLE_OK) {
-		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+	CURLcode ret2 = curl_easy_perform(handle);
+	if (ret2 != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret2));
 		curl_easy_cleanup(handle);
 		return NULL;
 	}
@@ -210,9 +210,9 @@ static char *APIForecast(char *city) {
 	}
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
 	
-	CURLcode ret = curl_easy_perform(handle);
-	if (ret != CURLE_OK) {
-		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+	CURLcode ret2 = curl_easy_perform(handle);
+	if (ret2 != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret2));
 		curl_easy_cleanup(handle);
 		fclose(fp);
 		return NULL;
@@ -409,9 +409,9 @@ static char *APITime(char *city) {
 	}
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
 	
-	CURLcode ret = curl_easy_perform(handle);
-	if (ret != CURLE_OK) {
-		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+	CURLcode ret2 = curl_easy_perform(handle);
+	if (ret2 != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret2));
 		curl_easy_cleanup(handle);
 		fclose(fp);
 		return NULL;
@@ -507,9 +507,9 @@ static char *APIWeather(char *city) {
 	}
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)fp);
 	
-	CURLcode ret = curl_easy_perform(handle);
-	if (ret != CURLE_OK) {
-		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret));
+	CURLcode ret2 = curl_easy_perform(handle);
+	if (ret2 != CURLE_OK) {
+		printf("api-fetcher error (curl): %s\n", curl_easy_strerror(ret2));
 		curl_easy_cleanup(handle);
 		fclose(fp);
 		return NULL;

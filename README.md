@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20231107
+20190824-20231222
 
 ## Overview
 
@@ -179,6 +179,14 @@ To make `/home/user/tmp` the only possible location to write, run _inside_ the c
     ln -sv /home/user/codybot/tmp /tmp
 
 You can also limit the permitted storage size by adding "--tmpfs /home/user/codybot/tmp:rw,size=100M"  
+
+## Running in Qemu  
+
+Update 231222 - new qemu image available!  
+
+You can now run codybot more safely by using a virtual machine.  
+The command I use is:  
+`qemu-system-x86_64 -vga std -display gtk -m 1024 -cpu host -smp 4 --enable-kvm -drive file=Lunar-codybot.qcow2,if=virtio -net user,hostfwd=tcp::2222-:22 -net nic`  
 
 ----
 

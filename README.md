@@ -187,6 +187,7 @@ Update 231222 - new qemu image available!
 You can now run codybot more safely by using a virtual machine.  
 The command I use is:  
 `qemu-system-x86_64 -vga std -display gtk -m 1024 -cpu host -smp 4 --enable-kvm -drive file=Lunar-codybot.qcow2,if=virtio -net user,hostfwd=tcp::2222-:22 -net nic`  
+https://qemu.esselfe.ca/codybot/
 
 ----
 

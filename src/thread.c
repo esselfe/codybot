@@ -378,6 +378,8 @@ strcmp(raw.command, "NICK") != 0) {
 			memset(buf, '#', 1024);
 			Msg(buf);
 		}
+		else if (strcmp(raw.text+1, "ping") == 0)
+			Msg("pong");
 // rainbow
 		else if (strcmp(raw.text+1, "rainbow") == 0) {
 			sprintf(buf, "Usage: %crainbow some random text", trigger_char);

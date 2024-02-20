@@ -114,8 +114,8 @@ strcmp(raw.command, "NICK") != 0) {
 			char c = trigger_char;
 			sprintf(buf, "commands: %cabout %cadmins %cascii %castro %ccal %ccalc %ccc "
 				"%cchars %ccolorize %cdate %cdict %cfoldoc %chelp %cfortune %cjoke "
-				"%crainbow %csh %cstats %ctime %cuptime %cversion %cweather",
-				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
+				"%cping %crainbow %csh %cstats %ctime %cuptime %cversion %cweather",
+				c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c);
 			Msg(buf);
 			continue;
 		}

@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20231222
+20190824-20240228
 
 ## Overview
 
@@ -100,11 +100,13 @@ The other commands are:
 `!cc printf("This is awesome!\n");` to compile C one-liners.  
 `!chars` to show special UTF-8 characters.  
 `!colorize SomeTextHere` to put random IRC color codes between each characters of the given text.  
+`!date` to show current date and time with possible "utc-/+N" argument.  
 `!dict TermHere` to retrieve the definition of a given term from dict.org.  
 `!foldoc AnyComputerTerm` to retrieve the definition of a given term from the foldoc computer-related database.  
 `!rainbow SomeText` (same but with ordered rainbow colors).  
 `!rawmsg PRIVMSG ChanServ :OP #codybot esselfe` to send a raw message to the server (admins only).
 `!stats` to show how many fortunes have been given.  
+`!time CityNameHere` to retrieve current time in a city.  
 `!uptime` to get for how long the bot have been running.  
 `!version` to show current bot's version.  
 

@@ -8,5 +8,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <uuid/uuid.h>
 
 int main(int argc, char **argv) {

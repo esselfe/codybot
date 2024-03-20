@@ -9,5 +9,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <uuid/uuid.h>
+#include <openssl/sha.h>
 
 int main(int argc, char **argv) {

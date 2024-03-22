@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <uuid/uuid.h>
 #include <openssl/sha.h>
 

@@ -48,11 +48,14 @@ void *ShRunFunc(void *argp) {
 	}
 	fputs(text, fp);
 	fclose(fp);
-	
-	sprintf(cmd, "bash -c 'timeout %ds bash prog.sh &> cmd.output; echo $? >cmd.ret'",
+
+	sprintf(cmd,
+		"bash -c 'timeout %ds bash ../prog.sh &> ../cmd.output; echo $? > ../cmd.ret'",
 		cmd_timeout);
 	Log(LOCAL, cmd);
+	chdir("tmp");
 	system(cmd);
+	chdir("..");
 
 	fp = fopen("cmd.ret", "r");
 	if (fp == NULL) {

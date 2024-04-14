@@ -39,6 +39,8 @@ extern char *colors[]; // IRC color codes used in '!colorize/!rainbow'
 #define IN 1
 #define OUT 2
 
+void StripNewline(char *text);
+
 // Globals from server.c
 extern unsigned int server_port, local_port;
 extern char *server_ip, *server_name;

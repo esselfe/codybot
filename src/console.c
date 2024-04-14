@@ -26,7 +26,12 @@ void ConsoleReadInput(void) {
 			Log(LOCAL, buffer);
 		}
 		else if (strncmp(buffer_line, "curch ", 6) == 0) {
+			StripNewline(buffer_line);
 			sprintf(current_channel, "%s", buffer_line+6);
+			if (debug) {
+				sprintf(buffer, "curch = %s", current_channel);
+				Msg(buffer);
+			}
 		}
 		else if (strcmp(buffer_line, "debug\n") == 0) {
 			sprintf(buffer, "debug = %d", debug);

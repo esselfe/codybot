@@ -111,6 +111,22 @@ void SignalFunc(int signum) {
 		ServerClose();
 }
 
+void StripNewline(char *text) {
+	char *c = text;
+
+	if (c == NULL)
+		return;
+
+	while (*c != '\0') {
+		if (*c == '\n') {
+			*c = '\0';
+			break;
+		}
+		
+		c++;
+	}
+}
+
 int main(int argc, char **argv) {
 	// initialize time for !uptime
 	gettimeofday(&tv_start, NULL);

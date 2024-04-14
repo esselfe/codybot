@@ -65,7 +65,7 @@ void Fortune(struct raw_line *rawp) {
 	fclose(fp);
 
 	if (strlen(fortune_line) > 0) {
-		RawGetTarget(rawp);
+		//RawGetTarget(rawp);
 		sprintf(buffer, "fortune: %s", fortune_line);
 		Msg(buffer);
 

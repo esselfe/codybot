@@ -1,6 +1,6 @@
 # Codybot
 
-20190824-20240228
+20190824-20240707
 
 ## Overview
 
@@ -104,7 +104,7 @@ The other commands are:
 `!dict TermHere` to retrieve the definition of a given term from dict.org.  
 `!foldoc AnyComputerTerm` to retrieve the definition of a given term from the foldoc computer-related database.  
 `!rainbow SomeText` (same but with ordered rainbow colors).  
-`!rawmsg PRIVMSG ChanServ :OP #codybot esselfe` to send a raw message to the server (admins only).
+`!rawmsg PRIVMSG ChanServ :OP #codybot esselfe` to send a raw message to the server (admins only).  
 `!stats` to show how many fortunes have been given.  
 `!time CityNameHere` to retrieve current time in a city.  
 `!uptime` to get for how long the bot have been running.  
@@ -115,7 +115,7 @@ The other commands are:
 If you want to use the chroot mechanism, you have to download the minimal chroot archive
 and extract it into the source directory. The latest chroot is available at  
 
-* https://hobby.esselfe.ca/codybot/chroot.tar.xz (minimal, 5.6MB download, extracts to 26MB)
+* https://hobby.esselfe.ca/codybot/chroot.tar.xz (Lunar minimal, 5.6MB download, extracts to 26MB)
 * https://hobby.esselfe.ca/codybot/chroot-alpine.tar.xz (3.4MB to 73MB)  
 * https://hobby.esselfe.ca/codybot/chroot-arch.tar.xz (8.3MB to 40MB)  
 * https://hobby.esselfe.ca/codybot/chroot-aws.tar.xz (11MB to 66MB)  
@@ -141,8 +141,6 @@ Update 210228 - new docker image available!
 
 You can now run codybot more safely by using a small or full docker container.
 
-Currently the "small" image is 547MB download, 1.6GB installed and
-the "full" image is 1.96GB download, 5.26GB installed.
 Install docker, make sure the services are started (containerd+docker),
 and run those commands to fetch and start the image:
 (replace "small" with "full" if you want to)
@@ -190,6 +188,12 @@ You can now run codybot more safely by using a virtual machine.
 The command I use is:  
 `qemu-system-x86_64 -vga std -display gtk -m 1024 -cpu host -smp 4 --enable-kvm -drive file=Lunar-codybot.qcow2,if=virtio -net user,hostfwd=tcp::2222-:22 -net nic`  
 https://qemu.esselfe.ca/codybot/
+
+## Running in VirtualBox
+
+Update 240707 - new VirtualBox disk image available!
+
+https://vbox.esselfe.ca/Lunar-codybot.vdi
 
 ----
 

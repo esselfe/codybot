@@ -195,7 +195,7 @@ Update 240707 - new VirtualBox disk image available!
 
 https://vbox.esselfe.ca/Codybot.vdi
 
-Default credentials: User root, password lunar
+Default credentials: User root, password codybot
 
 ----
 
